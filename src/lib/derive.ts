@@ -81,7 +81,7 @@ export function featuresFor(c: Character): SourcedFeature[] {
   for (const a of c.asi) {
     if (a.level > c.level) continue;
     if (a.type === "feat" && a.featId && FEAT_MAP[a.featId]) {
-      const feat = FEAT_MAP[a.featId];
+      const feat = FEAT_MAP[a.featId]!;
       out.push({
         level: a.level,
         name: `Dote: ${feat.name}`,
@@ -121,7 +121,7 @@ export function spellSlots(c: Character): { slots: number[]; pact?: { slots: num
   const ct = casterType(c);
   if (!ct) return { slots: [] };
   const lvl = Math.min(20, Math.max(1, c.level));
-  if (ct.type === "pact") return { slots: [], pact: PACT_MAGIC[lvl] };
+  if (ct.type === "pact") return { slots: [], pact: PACT_MAGIC[lvl]! };
   const table =
     ct.type === "full" ? FULL_CASTER_SLOTS : ct.type === "half" ? HALF_CASTER_SLOTS : THIRD_CASTER_SLOTS;
   return { slots: table[lvl] ?? [] };
@@ -147,7 +147,7 @@ export function spellsAllowed(c: Character): number {
   if (!ct) return 0;
   if (ct.type === "third") {
     const table = [0, 0, 0, 3, 4, 4, 4, 5, 6, 6, 7, 8, 8, 9, 10, 10, 11, 11, 11, 12, 13];
-    return table[Math.min(20, c.level)];
+    return table[Math.min(20, c.level)] ?? 0;
   }
   return klass?.spellsPrepared?.[Math.min(20, c.level)] ?? 0;
 }
