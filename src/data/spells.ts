@@ -1,0 +1,143 @@
+import type { Spell } from "@/lib/types";
+
+/** [id, nombre, nivel, escuela, clases, descripción, tiempo, alcance, duración] */
+type Row = [string, string, number, string, string[], string, string?, string?, string?];
+
+const B = "bard", C = "cleric", D = "druid", P = "paladin", R = "ranger", S = "sorcerer", W = "warlock", Z = "wizard";
+
+const ROWS: Row[] = [
+  // Trucos
+  ["acid-splash", "Salpicadura Ácida", 0, "Evocación", [S, Z], "Lanzas una burbuja de ácido: 1d6 de daño de ácido a una o dos criaturas cercanas.", "Acción", "60 pies", "Instantáneo"],
+  ["chill-touch", "Toque Escalofriante", 0, "Nigromancia", [S, W, Z], "Mano espectral que causa 1d10 de daño necrótico e impide curarse.", "Acción", "120 pies", "1 asalto"],
+  ["dancing-lights", "Luces Danzantes", 0, "Ilusión", [B, S, Z], "Creas hasta cuatro luces flotantes que puedes mover.", "Acción", "120 pies", "1 minuto"],
+  ["druidcraft", "Druidcraft", 0, "Transmutación", [D], "Efectos naturales menores: predices el clima, haces florecer una semilla.", "Acción", "30 pies", "Instantáneo"],
+  ["eldritch-blast", "Explosión Sobrenatural", 0, "Evocación", [W], "Rayo de energía: 1d10 de daño de fuerza; rayos adicionales al subir de nivel.", "Acción", "120 pies", "Instantáneo"],
+  ["fire-bolt", "Rayo de Fuego", 0, "Evocación", [S, Z], "Proyectil de fuego: 1d10 de daño de fuego.", "Acción", "120 pies", "Instantáneo"],
+  ["guidance", "Guía", 0, "Adivinación", [C, D], "Un aliado añade 1d4 a una prueba de característica.", "Acción", "Toque", "Concentración, 1 minuto"],
+  ["light", "Luz", 0, "Evocación", [B, C, S, Z], "Un objeto emite luz brillante en 20 pies.", "Acción", "Toque", "1 hora"],
+  ["mage-hand", "Mano de Mago", 0, "Conjuración", [B, S, W, Z], "Mano espectral que manipula objetos ligeros.", "Acción", "30 pies", "1 minuto"],
+  ["minor-illusion", "Ilusión Menor", 0, "Ilusión", [B, S, W, Z], "Creas un sonido o una imagen de un objeto.", "Acción", "30 pies", "1 minuto"],
+  ["prestidigitation", "Prestidigitación", 0, "Transmutación", [B, S, W, Z], "Trucos mágicos menores de utilidad.", "Acción", "10 pies", "Hasta 1 hora"],
+  ["produce-flame", "Producir Llama", 0, "Conjuración", [D], "Llama en tu mano que ilumina o se arroja para 1d8 de fuego.", "Acción", "Personal", "10 minutos"],
+  ["sacred-flame", "Llama Sagrada", 0, "Evocación", [C], "2d8 de daño radiante; ignora cobertura.", "Acción", "60 pies", "Instantáneo"],
+  ["shillelagh", "Garrote Mágico", 0, "Transmutación", [D], "Tu bastón causa 1d8 de daño de fuerza usando tu Sabiduría.", "Acción adicional", "Toque", "1 minuto"],
+  ["shocking-grasp", "Descarga Eléctrica", 0, "Evocación", [S, Z], "1d8 de daño de relámpago; el objetivo no puede reaccionar.", "Acción", "Toque", "Instantáneo"],
+  ["spare-the-dying", "Perdonar a los Moribundos", 0, "Nigromancia", [C, D], "Estabilizas a una criatura con 0 puntos de golpe.", "Acción adicional", "15 pies", "Instantáneo"],
+  ["thaumaturgy", "Taumaturgia", 0, "Transmutación", [C, W], "Manifiestas señales sobrenaturales menores.", "Acción", "30 pies", "1 minuto"],
+  ["thorn-whip", "Látigo Espinoso", 0, "Transmutación", [D], "1d6 de daño perforante y arrastras al objetivo 10 pies.", "Acción", "30 pies", "Instantáneo"],
+  ["toll-the-dead", "Tañido de Muerte", 0, "Nigromancia", [C, W, Z], "1d8 (o 1d12 si está herido) de daño necrótico.", "Acción", "60 pies", "Instantáneo"],
+  ["vicious-mockery", "Burla Cruel", 0, "Encantamiento", [B], "1d6 de daño psíquico y desventaja en su siguiente ataque.", "Acción", "60 pies", "Instantáneo"],
+  // Nivel 1
+  ["bless", "Bendición", 1, "Encantamiento", [C, P], "Tres criaturas añaden 1d4 a ataques y salvaciones.", "Acción", "30 pies", "Concentración, 1 minuto"],
+  ["burning-hands", "Manos Ardientes", 1, "Evocación", [S, Z], "Cono de fuego de 15 pies: 3d6 de daño.", "Acción", "Personal", "Instantáneo"],
+  ["charm-person", "Hechizar Persona", 1, "Encantamiento", [B, D, S, W, Z], "Hechizas a un humanoide durante 1 hora.", "Acción", "30 pies", "1 hora"],
+  ["command", "Orden Imperiosa", 1, "Encantamiento", [B, C, P, W], "Obligas a una criatura a obedecer una orden de una palabra.", "Acción", "60 pies", "1 asalto"],
+  ["cure-wounds", "Curar Heridas", 1, "Abjuración", [B, C, D, P, R], "Curas 2d8 + mod. de característica.", "Acción", "Toque", "Instantáneo"],
+  ["detect-magic", "Detectar Magia", 1, "Adivinación", [B, C, D, P, R, S, W, Z], "Percibes auras mágicas a 30 pies.", "Acción", "Personal", "Concentración, 10 minutos"],
+  ["disguise-self", "Disfrazarse", 1, "Ilusión", [B, S, Z], "Alteras tu apariencia durante 1 hora.", "Acción", "Personal", "1 hora"],
+  ["dissonant-whispers", "Susurros Disonantes", 1, "Encantamiento", [B], "3d6 psíquico y el objetivo huye.", "Acción", "60 pies", "Instantáneo"],
+  ["divine-favor", "Favor Divino", 1, "Transmutación", [P], "Tus ataques causan 1d4 de daño radiante extra.", "Acción adicional", "Personal", "1 minuto"],
+  ["entangle", "Enredar", 1, "Conjuración", [D], "Plantas apresan criaturas en un cuadrado de 20 pies.", "Acción", "90 pies", "Concentración, 1 minuto"],
+  ["faerie-fire", "Fuego Feérico", 1, "Evocación", [B, D], "Las criaturas de un cubo brillan y reciben ataques con ventaja.", "Acción", "60 pies", "Concentración, 1 minuto"],
+  ["false-life", "Falsa Vida", 1, "Nigromancia", [S, W, Z], "Ganas 2d4+4 puntos de golpe temporales.", "Acción", "Personal", "1 hora"],
+  ["guiding-bolt", "Rayo Guía", 1, "Evocación", [C], "4d6 de daño radiante y el siguiente ataque tiene ventaja.", "Acción", "120 pies", "1 asalto"],
+  ["healing-word", "Palabra Curativa", 1, "Abjuración", [B, C, D], "Curas 2d4 + mod. como acción adicional.", "Acción adicional", "60 pies", "Instantáneo"],
+  ["hellish-rebuke", "Reprensión Infernal", 1, "Evocación", [W], "Reacción: 2d10 de daño de fuego a quien te dañó.", "Reacción", "60 pies", "Instantáneo"],
+  ["heroism", "Heroísmo", 1, "Encantamiento", [B, P], "Inmunidad al miedo y pg temporales cada turno.", "Acción", "Toque", "Concentración, 1 minuto"],
+  ["hunters-mark", "Marca del Cazador", 1, "Adivinación", [P, R, W], "Marcas a una criatura: 1d6 de daño extra por golpe.", "Acción adicional", "90 pies", "Concentración, 1 hora"],
+  ["hex", "Maleficio", 1, "Encantamiento", [W], "1d6 necrótico extra y desventaja en una característica.", "Acción adicional", "90 pies", "Concentración, 1 hora"],
+  ["mage-armor", "Armadura de Mago", 1, "Abjuración", [S, Z], "La CA de un objetivo sin armadura pasa a 13 + Destreza.", "Acción", "Toque", "8 horas"],
+  ["magic-missile", "Misil Mágico", 1, "Evocación", [S, Z], "Tres dardos que causan 1d4+1 de fuerza cada uno.", "Acción", "120 pies", "Instantáneo"],
+  ["shield", "Escudo", 1, "Abjuración", [S, Z], "Reacción: +5 a la CA y resistencia a Misil Mágico.", "Reacción", "Personal", "1 asalto"],
+  ["sleep", "Sueño", 1, "Encantamiento", [B, S, Z], "Duermes criaturas en un área hasta agotar los pg.", "Acción", "90 pies", "Concentración, 1 minuto"],
+  ["thunderwave", "Ola Trepidante", 1, "Evocación", [B, D, S, Z], "Cubo de 15 pies: 2d8 de trueno y empuje.", "Acción", "Personal", "Instantáneo"],
+  ["speak-with-animals", "Hablar con los Animales", 1, "Adivinación", [B, D, R], "Comunicas con bestias durante 10 minutos.", "Acción", "Personal", "10 minutos"],
+  // Nivel 2
+  ["aid", "Ayuda", 2, "Abjuración", [C, P, R], "Tres criaturas ganan 5 pg máximos y actuales adicionales.", "Acción", "30 pies", "8 horas"],
+  ["blur", "Difuminar", 2, "Ilusión", [S, Z], "Los ataques contra ti tienen desventaja.", "Acción", "Personal", "Concentración, 1 minuto"],
+  ["darkness", "Oscuridad", 2, "Evocación", [S, W, Z], "Esfera de 15 pies de oscuridad mágica.", "Acción", "60 pies", "Concentración, 10 minutos"],
+  ["hold-person", "Inmovilizar Persona", 2, "Encantamiento", [B, C, D, S, W, Z], "Paralizas a un humanoide.", "Acción", "60 pies", "Concentración, 1 minuto"],
+  ["invisibility", "Invisibilidad", 2, "Ilusión", [B, S, W, Z], "Una criatura se vuelve invisible.", "Acción", "Toque", "Concentración, 1 hora"],
+  ["misty-step", "Paso Brumoso", 2, "Conjuración", [S, W, Z], "Te teletransportas 30 pies como acción adicional.", "Acción adicional", "Personal", "Instantáneo"],
+  ["moonbeam", "Rayo de Luna", 2, "Evocación", [D], "Haz de luz que causa 2d10 radiante.", "Acción", "120 pies", "Concentración, 1 minuto"],
+  ["scorching-ray", "Rayo Abrasador", 2, "Evocación", [S, Z], "Tres rayos de 2d6 de fuego.", "Acción", "120 pies", "Instantáneo"],
+  ["shatter", "Añicos", 2, "Evocación", [B, S, W, Z], "Esfera de 10 pies: 3d8 de daño de trueno.", "Acción", "60 pies", "Instantáneo"],
+  ["spiritual-weapon", "Arma Espiritual", 2, "Evocación", [C], "Arma espectral que ataca por 1d8 + mod.", "Acción adicional", "60 pies", "Concentración, 1 minuto"],
+  ["pass-without-trace", "Pasar sin Rastro", 2, "Abjuración", [D, R], "+10 a Sigilo del grupo y no dejáis rastro.", "Acción", "Personal", "Concentración, 1 hora"],
+  ["lesser-restoration", "Restauración Menor", 2, "Abjuración", [B, C, D, P, R], "Curas una enfermedad o estado.", "Acción", "Toque", "Instantáneo"],
+  ["mirror-image", "Imagen Múltiple", 2, "Ilusión", [S, W, Z], "Tres duplicados ilusorios te protegen.", "Acción", "Personal", "1 minuto"],
+  // Nivel 3
+  ["counterspell", "Contraconjuro", 3, "Abjuración", [S, W, Z], "Reacción para interrumpir el lanzamiento de un conjuro.", "Reacción", "60 pies", "Instantáneo"],
+  ["dispel-magic", "Disipar Magia", 3, "Abjuración", [B, C, D, P, S, W, Z], "Terminas efectos mágicos sobre un objetivo.", "Acción", "120 pies", "Instantáneo"],
+  ["fireball", "Bola de Fuego", 3, "Evocación", [S, Z], "Esfera de 20 pies: 8d6 de daño de fuego.", "Acción", "150 pies", "Instantáneo"],
+  ["fly", "Volar", 3, "Transmutación", [S, W, Z], "Velocidad de vuelo de 60 pies.", "Acción", "Toque", "Concentración, 10 minutos"],
+  ["haste", "Acelerar", 3, "Transmutación", [S, Z], "Doble velocidad, +2 CA y acción adicional limitada.", "Acción", "30 pies", "Concentración, 1 minuto"],
+  ["hypnotic-pattern", "Patrón Hipnótico", 3, "Ilusión", [B, S, W, Z], "Incapacitas criaturas en un cubo de 30 pies.", "Acción", "120 pies", "Concentración, 1 minuto"],
+  ["lightning-bolt", "Relámpago", 3, "Evocación", [S, Z], "Línea de 100 pies: 8d6 de daño de relámpago.", "Acción", "Personal", "Instantáneo"],
+  ["revivify", "Revivir", 3, "Nigromancia", [C, D, P, R], "Devuelves a la vida a alguien muerto hace menos de 1 minuto.", "Acción", "Toque", "Instantáneo"],
+  ["spirit-guardians", "Guardianes Espirituales", 3, "Conjuración", [C], "Espíritus dañan y ralentizan enemigos a 15 pies.", "Acción", "Personal", "Concentración, 10 minutos"],
+  ["conjure-animals", "Convocar Animales", 3, "Conjuración", [D, R], "Invocas espíritus bestiales que luchan por ti.", "Acción", "60 pies", "Concentración, 1 hora"],
+  // Nivel 4
+  ["banishment", "Destierro", 4, "Abjuración", [C, P, S, W, Z], "Destierras a una criatura a otro plano.", "Acción", "60 pies", "Concentración, 1 minuto"],
+  ["dimension-door", "Puerta Dimensional", 4, "Conjuración", [B, S, W, Z], "Te teletransportas 500 pies con un aliado.", "Acción", "500 pies", "Instantáneo"],
+  ["greater-invisibility", "Invisibilidad Superior", 4, "Ilusión", [B, S, Z], "Invisibilidad que persiste al atacar.", "Acción", "Toque", "Concentración, 1 minuto"],
+  ["polymorph", "Metamorfosis", 4, "Transmutación", [B, D, S, Z], "Transformas a una criatura en una bestia.", "Acción", "60 pies", "Concentración, 1 hora"],
+  ["wall-of-fire", "Muro de Fuego", 4, "Evocación", [D, S, Z], "Muro llameante: 5d8 de daño de fuego.", "Acción", "120 pies", "Concentración, 1 minuto"],
+  ["death-ward", "Guardia contra la Muerte", 4, "Abjuración", [C, P], "El objetivo sobrevive a un golpe letal.", "Acción", "Toque", "8 horas"],
+  // Nivel 5
+  ["animate-objects", "Animar Objetos", 5, "Transmutación", [B, S, Z], "Hasta diez objetos cobran vida y luchan.", "Acción", "120 pies", "Concentración, 1 minuto"],
+  ["cone-of-cold", "Cono de Frío", 5, "Evocación", [D, S, Z], "Cono de 60 pies: 8d8 de daño de frío.", "Acción", "Personal", "Instantáneo"],
+  ["greater-restoration", "Restauración Mayor", 5, "Abjuración", [B, C, D], "Eliminas maldiciones, agotamiento o petrificación.", "Acción", "Toque", "Instantáneo"],
+  ["hold-monster", "Inmovilizar Monstruo", 5, "Encantamiento", [B, S, W, Z], "Paralizas a cualquier criatura.", "Acción", "90 pies", "Concentración, 1 minuto"],
+  ["mass-cure-wounds", "Curar Heridas en Masa", 5, "Abjuración", [B, C, D], "Curas 3d8 + mod. a seis criaturas.", "Acción", "60 pies", "Instantáneo"],
+  ["wall-of-force", "Muro de Fuerza", 5, "Evocación", [Z], "Barrera invisible e impenetrable.", "Acción", "120 pies", "Concentración, 10 minutos"],
+  ["flame-strike", "Columna de Fuego", 5, "Evocación", [C, W], "Columna divina: 4d6 fuego + 4d6 radiante.", "Acción", "60 pies", "Instantáneo"],
+  // Nivel 6
+  ["chain-lightning", "Relámpago en Cadena", 6, "Evocación", [S, Z], "10d8 de relámpago que salta entre objetivos.", "Acción", "150 pies", "Instantáneo"],
+  ["disintegrate", "Desintegrar", 6, "Transmutación", [S, Z], "10d6+40 de daño de fuerza; reduce a polvo.", "Acción", "60 pies", "Instantáneo"],
+  ["heal", "Sanar", 6, "Abjuración", [C, D], "Restauras 70 puntos de golpe y eliminas estados.", "Acción", "60 pies", "Instantáneo"],
+  ["true-seeing", "Visión Verdadera", 6, "Adivinación", [B, C, S, W, Z], "Ves lo invisible, ilusiones y cambiaformas.", "Acción", "Toque", "1 hora"],
+  ["sunbeam", "Rayo de Sol", 6, "Evocación", [D, S, Z], "Haz de luz solar: 6d8 radiante y ceguera.", "Acción", "Personal", "Concentración, 1 minuto"],
+  // Nivel 7
+  ["finger-of-death", "Dedo de la Muerte", 7, "Nigromancia", [S, W, Z], "7d8+30 necrótico; crea un zombi si mata.", "Acción", "60 pies", "Instantáneo"],
+  ["plane-shift", "Cambio de Plano", 7, "Conjuración", [C, D, S, W, Z], "Viajas a otro plano de existencia.", "Acción", "Toque", "Instantáneo"],
+  ["regenerate", "Regenerar", 7, "Transmutación", [B, C, D], "Curación continua y regeneración de miembros.", "1 minuto", "Toque", "1 hora"],
+  ["teleport", "Teletransporte", 7, "Conjuración", [B, S, Z], "Transportas al grupo a un destino conocido.", "Acción", "10 pies", "Instantáneo"],
+  // Nivel 8
+  ["dominate-monster", "Dominar Monstruo", 8, "Encantamiento", [B, S, W, Z], "Controlas cualquier criatura.", "Acción", "60 pies", "Concentración, 1 hora"],
+  ["sunburst", "Estallido Solar", 8, "Evocación", [D, S, Z], "Esfera de 60 pies: 12d6 radiante y ceguera.", "Acción", "150 pies", "Instantáneo"],
+  ["holy-aura", "Aura Sagrada", 8, "Abjuración", [C], "Aura que protege y ciega a los enemigos.", "Acción", "Personal", "Concentración, 1 minuto"],
+  ["feeblemind", "Mente en Blanco", 8, "Encantamiento", [B, D, W, Z], "4d6 psíquico y reduce Inteligencia y Carisma a 1.", "Acción", "150 pies", "Instantáneo"],
+  // Nivel 9
+  ["foresight", "Presciencia", 9, "Adivinación", [B, D, W, Z], "Ventaja constante y nadie te ataca con ventaja.", "1 minuto", "Toque", "8 horas"],
+  ["meteor-swarm", "Enjambre de Meteoros", 9, "Evocación", [S, Z], "Cuatro impactos: 20d6 fuego + 20d6 contundente.", "Acción", "1 milla", "Instantáneo"],
+  ["power-word-kill", "Palabra de Poder: Matar", 9, "Encantamiento", [B, S, W, Z], "Matas a una criatura con 100 pg o menos.", "Acción", "60 pies", "Instantáneo"],
+  ["true-resurrection", "Resurrección Verdadera", 9, "Nigromancia", [C, D], "Devuelves a la vida a alguien muerto hasta 200 años.", "1 hora", "Toque", "Instantáneo"],
+  ["mass-heal", "Sanar en Masa", 9, "Abjuración", [C], "Repartes 700 puntos de golpe entre criaturas.", "Acción", "60 pies", "Instantáneo"],
+  ["wish", "Deseo", 9, "Conjuración", [S, Z], "El conjuro más poderoso: altera la realidad.", "Acción", "Personal", "Instantáneo"],
+];
+
+export const SPELLS: Spell[] = ROWS.map(
+  ([id, name, level, school, classes, desc, castingTime, range, duration]) => ({
+    id,
+    name,
+    level,
+    school,
+    classes,
+    desc,
+    castingTime: castingTime ?? "Acción",
+    range: range ?? "60 pies",
+    duration: duration ?? "Instantáneo",
+    concentration: (duration ?? "").includes("Concentración"),
+  }),
+);
+
+export const SPELL_MAP = Object.fromEntries(SPELLS.map((s) => [s.id, s]));
+
+/** Conjuros disponibles para una clase (y subclase con lanzamiento de tercio) */
+export function spellsForClass(classId: string | null, subclassId: string | null): Spell[] {
+  if (!classId) return [];
+  const listId =
+    subclassId === "eldritch-knight" || subclassId === "arcane-trickster" ? "wizard" : classId;
+  return SPELLS.filter((s) => s.classes.includes(listId));
+}
