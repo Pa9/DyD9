@@ -77,19 +77,27 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Grimorio 5.5e — Creador de personajes de D&D" },
+      {
+        name: "description",
+        content:
+          "Crea, guarda y sube de nivel personajes de Dungeons & Dragons 5.5e con progresión automática.",
+      },
+      { property: "og:title", content: "Grimorio 5.5e — Creador de personajes de D&D" },
+      {
+        property: "og:description",
+        content: "Asistente de creación, ficha completa y subida de nivel para D&D 5.5e.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
+      { rel: "stylesheet", href: appCss },
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: appCss,
+        href: "https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Alegreya+Sans:wght@400;500;700&family=Alegreya:ital,wght@0,400;0,500;1,400&display=swap",
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
@@ -102,7 +110,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="es">
       <head>
         <HeadContent />
       </head>
@@ -119,8 +127,41 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <SiteHeader />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
+      <Toaster position="top-center" />
     </QueryClientProvider>
+  );
+}
+
+function SiteHeader() {
+  return (
+    <header className="sticky top-0 z-40 border-b border-border/70 bg-background/85 backdrop-blur">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
+        <Link to="/" className="flex items-center gap-2.5">
+          <span className="grid size-8 place-items-center rounded-md border border-primary/50 bg-secondary text-primary">
+            <Dices className="size-4" />
+          </span>
+          <span className="font-display text-base leading-none tracking-wide">
+            Grimorio <span className="text-primary">5.5e</span>
+          </span>
+        </Link>
+        <nav className="flex items-center gap-1 text-sm">
+          <Link
+            to="/"
+            className="rounded-md px-3 py-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+          >
+            Personajes
+          </Link>
+          <Link
+            to="/crear"
+            className="rounded-md border border-primary/60 px-3 py-1.5 font-medium text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+          >
+            Crear
+          </Link>
+        </nav>
+      </div>
+    </header>
   );
 }
