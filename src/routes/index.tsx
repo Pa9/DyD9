@@ -165,7 +165,7 @@ function CharactersPage() {
 
                 <div className="mt-auto flex flex-wrap gap-1.5 pt-1">
                   <Button size="sm" asChild>
-                    <Link to="/personaje/$id" params={{ id: c.id }}>
+                    <Link to="/personaje/$id" params={{ id: c.id }} search={{ tab: "ficha" }}>
                       <ArrowUpRight className="size-4" /> Abrir ficha
                     </Link>
                   </Button>
@@ -203,7 +203,7 @@ function CharactersPage() {
             type="button"
             onClick={() => {
               const created = store.add(createCharacter());
-              void navigate({ to: "/personaje/$id", params: { id: created.id } });
+              void navigate({ to: "/personaje/$id", params: { id: created.id }, search: { tab: "ficha" } });
             }}
             className="flex min-h-40 flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border p-6 text-muted-foreground transition-colors hover:border-primary/60 hover:text-foreground"
           >

@@ -57,7 +57,7 @@ type Tab = "ficha" | "nivel";
 
 export const Route = createFileRoute("/personaje/$id")({
   validateSearch: (search: Record<string, unknown>): { tab: Tab } => ({
-    tab: search.tab === "nivel" ? "nivel" : "ficha",
+    tab: search['tab'] === "nivel" ? "nivel" : "ficha",
   }),
   head: () => ({
     meta: [
@@ -215,7 +215,7 @@ function StatSummary({ character }: { character: Character }) {
   const ac = armorClass(character);
   const saves = saveBonuses(character);
   const sc = spellcastingStats(character);
-  const skills = skillLines(character).filter((s) => s.proficient || s.expertise);
+  const skills = skillLines(character).filter((s) => s.proficient || s.expert);
 
   return (
     <Section title="Resumen" hint={`Bonificador de competencia +${proficiencyBonus(character.level)}`}>
@@ -264,7 +264,7 @@ function StatSummary({ character }: { character: Character }) {
               {skills.map((s) => (
                 <Badge key={s.id} variant="outline">
                   {s.name} {fmtMod(s.bonus)}
-                  {s.expertise ? " ◆" : ""}
+                  {s.expert ? " ◆" : ""}
                 </Badge>
               ))}
             </div>
