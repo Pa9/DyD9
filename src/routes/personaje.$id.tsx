@@ -147,22 +147,36 @@ function CharacterPage() {
         </div>
       </header>
 
-      <Tabs
-        value={tab}
-        onValueChange={(v) =>
-          void navigate({
-            to: "/personaje/$id",
-            params: { id },
-            search: { tab: v === "nivel" ? "nivel" : "ficha" },
-          })
-        }
+      <div
+        role="tablist"
+        aria-label="Secciones del personaje"
+        className="mb-4 inline-flex gap-1 rounded-lg border border-border bg-card/60 p-1"
       >
-        <TabsList className="mb-4">
-          <TabsTrigger value="ficha">Ficha</TabsTrigger>
-          <TabsTrigger value="nivel">Subida de nivel</TabsTrigger>
-        </TabsList>
+        {([
+          ["ficha", "Ficha"],
+          ["nivel", "Subida de nivel"],
+        ] as [Tab, string][]).map(([value, label]) => (
+          <button
+            key={value}
+            type="button"
+            role="tab"
+            aria-selected={tab === value}
+            onClick={() =>
+              void navigate({ to: "/personaje/$id", params: { id }, search: { tab: value } })
+            }
+            className={
+              tab === value
+                ? "rounded-md bg-secondary px-3 py-1.5 text-sm font-medium text-primary shadow-gold"
+                : "rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+            }
+          >
+            {label}
+          </button>
+        ))}
+      </div>
 
-        <TabsContent value="ficha" className="space-y-5">
+      {tab === "ficha" ? (
+        <div className="space-y-5">
           <StatSummary character={character} />
           <IdentitySection character={character} update={update} />
           <SpeciesSection character={character} update={update} />
@@ -175,12 +189,13 @@ function CharacterPage() {
           <SpellsSection character={character} update={update} />
           <EquipmentSection character={character} update={update} />
           <NotesSection character={character} update={update} />
-        </TabsContent>
-
-        <TabsContent value="nivel" className="space-y-5">
+        </div>
+      ) : (
+        <div className="space-y-5">
           <LevelUpPanel character={character} update={update} />
-        </TabsContent>
-      </Tabs>
+        </div>
+      )}
+
 
       <AlertDialog open={confirmDelete} onOpenChange={setConfirmDelete}>
         <AlertDialogContent>
