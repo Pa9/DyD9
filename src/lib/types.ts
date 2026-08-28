@@ -110,8 +110,8 @@ export interface Feat {
 export interface AsiChoice {
   level: number;
   type: "asi" | "feat";
-  abilities?: AbilityKey[];
-  featId?: string;
+  abilities?: AbilityKey[] | undefined;
+  featId?: string | undefined;
 }
 
 export interface Character {
