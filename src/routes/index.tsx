@@ -233,9 +233,9 @@ function CharactersPage() {
               Eliminar
             </AlertDialogAction>
           </AlertDialogFooter>
-        </AlertDialogFooter>
-      </AlertDialogContent>
+        </AlertDialogContent>
       </AlertDialog>
+
     </main>
   );
 }
