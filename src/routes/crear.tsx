@@ -97,11 +97,12 @@ function CreateEditor({ id }: { id: string }) {
         <Button
           onClick={() => {
             toast.success("Personaje guardado");
-            navigate({ to: "/" });
+            navigate({ to: "/personaje/$id", params: { id }, search: { tab: "ficha" } });
           }}
         >
-          Guardar y volver
+          Guardar y ver ficha
         </Button>
+
         <Button
           variant="outline"
           onClick={() => {
