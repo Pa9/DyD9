@@ -1,9 +1,6 @@
 import type { Spell } from "@/lib/types";
-
-/** [id, nombre, nivel, escuela, clases, descripción, tiempo, alcance, duración] */
-type Row = [string, string, number, string, string[], string, string?, string?, string?];
-
-const B = "bard", C = "cleric", D = "druid", P = "paladin", R = "ranger", S = "sorcerer", W = "warlock", Z = "wizard";
+import { B, C, D, P, R, S, W, Z, UPCAST, type SpellRow as Row } from "./spell-row";
+import { EXTRA_ROWS } from "./spells-extra";
 
 const ROWS: Row[] = [
   // Trucos
@@ -117,8 +114,9 @@ const ROWS: Row[] = [
   ["wish", "Deseo", 9, "Conjuración", [S, Z], "El conjuro más poderoso: altera la realidad.", "Acción", "Personal", "Instantáneo"],
 ];
 
-export const SPELLS: Spell[] = ROWS.map(
-  ([id, name, level, school, classes, desc, castingTime, range, duration]) => ({
+function toSpell([id, name, level, school, classes, desc, castingTime, range, duration, upcast]: Row): Spell {
+  const scaling = upcast ?? UPCAST[id];
+  return {
     id,
     name,
     level,
@@ -129,10 +127,18 @@ export const SPELLS: Spell[] = ROWS.map(
     range: range ?? "60 pies",
     duration: duration ?? "Instantáneo",
     concentration: (duration ?? "").includes("Concentración"),
-  }),
+    ...(scaling ? { upcast: scaling } : {}),
+  };
+}
+
+const ALL_ROWS: Row[] = [...ROWS, ...EXTRA_ROWS];
+
+/** Todos los conjuros, sin duplicados por id y ordenados por nivel y nombre. */
+export const SPELLS: Spell[] = [...new Map(ALL_ROWS.map((r) => [r[0], toSpell(r)])).values()].sort(
+  (a, b) => a.level - b.level || a.name.localeCompare(b.name, "es"),
 );
 
-export const SPELL_MAP = Object.fromEntries(SPELLS.map((s) => [s.id, s]));
+export const SPELL_MAP: Record<string, Spell> = Object.fromEntries(SPELLS.map((s) => [s.id, s]));
 
 /** Conjuros disponibles para una clase (y subclase con lanzamiento de tercio) */
 export function spellsForClass(classId: string | null, subclassId: string | null): Spell[] {

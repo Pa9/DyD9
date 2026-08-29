@@ -30,6 +30,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { InfoButton, SpellInfoButton } from "@/components/character/InfoDialog";
 
 export type Patch = Partial<Character> | ((c: Character) => Partial<Character>);
 export interface SectionProps {
@@ -70,6 +71,7 @@ export function OptionCard({
   subtitle,
   meta,
   disabled,
+  info,
 }: {
   selected: boolean;
   onSelect: () => void;
@@ -77,29 +79,35 @@ export function OptionCard({
   subtitle?: string;
   meta?: string;
   disabled?: boolean;
+  /** Botón de explicación (ⓘ) que se muestra en la esquina */
+  info?: ReactNode;
 }) {
   return (
-    <button
-      type="button"
-      disabled={disabled}
-      onClick={onSelect}
-      className={cn(
-        "w-full rounded-lg border p-3 text-left transition-all",
-        selected
-          ? "border-primary bg-secondary shadow-gold"
-          : "border-border bg-card/60 hover:border-primary/50 hover:bg-secondary/60",
-        disabled && "cursor-not-allowed opacity-45",
-      )}
-    >
-      <div className="flex items-start justify-between gap-2">
-        <span className="font-display text-sm leading-tight">{title}</span>
-        {selected ? <Check className="mt-0.5 size-4 shrink-0 text-primary" /> : null}
-      </div>
-      {subtitle ? (
-        <p className="mt-1 line-clamp-3 text-xs leading-relaxed text-muted-foreground">{subtitle}</p>
-      ) : null}
-      {meta ? <p className="mt-1.5 text-[11px] uppercase tracking-wide text-primary/80">{meta}</p> : null}
-    </button>
+    <div className="relative">
+      <button
+        type="button"
+        disabled={disabled}
+        onClick={onSelect}
+        className={cn(
+          "w-full rounded-lg border p-3 text-left transition-all",
+          info && "pr-10",
+          selected
+            ? "border-primary bg-secondary shadow-gold"
+            : "border-border bg-card/60 hover:border-primary/50 hover:bg-secondary/60",
+          disabled && "cursor-not-allowed opacity-45",
+        )}
+      >
+        <div className="flex items-start justify-between gap-2">
+          <span className="font-display text-sm leading-tight">{title}</span>
+          {selected ? <Check className="mt-0.5 size-4 shrink-0 text-primary" /> : null}
+        </div>
+        {subtitle ? (
+          <p className="mt-1 line-clamp-3 text-xs leading-relaxed text-muted-foreground">{subtitle}</p>
+        ) : null}
+        {meta ? <p className="mt-1.5 text-[11px] uppercase tracking-wide text-primary/80">{meta}</p> : null}
+      </button>
+      {info ? <div className="absolute right-1.5 top-8">{info}</div> : null}
+    </div>
   );
 }
 
@@ -613,6 +621,21 @@ export function FeaturesSection({ character, update }: SectionProps) {
                     <Badge variant="outline" className="text-[10px]">
                       {f.source}
                     </Badge>
+                    <InfoButton
+                      title={f.name}
+                      subtitle={`${f.source} · se obtiene en el nivel ${f.level}`}
+                      body={f.desc}
+                      rows={[
+                        { label: "Origen", value: f.source },
+                        { label: "Nivel en que se gana", value: `Nivel ${f.level}` },
+                        {
+                          label: "¿Requiere elección?",
+                          value: f.choice
+                            ? `Sí: ${f.choice.label} (eliges ${f.choice.count}).`
+                            : "No, se aplica automáticamente.",
+                        },
+                      ]}
+                    />
                   </div>
                   <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{f.desc}</p>
                   {f.choice ? (
@@ -829,6 +852,7 @@ export function SpellsSection({ character, update }: SectionProps) {
                 selected={character.cantrips.includes(s.id)}
                 disabled={!character.cantrips.includes(s.id) && character.cantrips.length >= cantripLimit}
                 onSelect={() => toggle(s.id, true)}
+                info={<SpellInfoButton spell={s} />}
               />
             ))}
           </div>
@@ -852,6 +876,7 @@ export function SpellsSection({ character, update }: SectionProps) {
                   selected={character.spells.includes(s.id)}
                   disabled={!character.spells.includes(s.id) && character.spells.length >= spellLimit}
                   onSelect={() => toggle(s.id, false)}
+                  info={<SpellInfoButton spell={s} />}
                 />
               ))}
             </div>
@@ -868,6 +893,29 @@ export function SpellsSection({ character, update }: SectionProps) {
 }
 
 /* --------------------------------- Equipo -------------------------------- */
+
+const CURRENCIES = [
+  {
+    key: "pp",
+    label: "PT (piezas de platino)",
+    help: "Piezas de platino. La moneda más valiosa: 1 PT equivale a 10 PO (piezas de oro), 100 PP (piezas de plata) o 1.000 PC (piezas de cobre).",
+  },
+  {
+    key: "gp",
+    label: "PO (piezas de oro)",
+    help: "Piezas de oro. La moneda habitual de la aventura: 1 PO equivale a 10 piezas de plata (PP) o 100 piezas de cobre (PC).",
+  },
+  {
+    key: "sp",
+    label: "PP (piezas de plata)",
+    help: "Piezas de plata. 1 pieza de plata equivale a 10 piezas de cobre (PC); 10 de plata hacen 1 pieza de oro (PO).",
+  },
+  {
+    key: "cp",
+    label: "PC (piezas de cobre)",
+    help: "Piezas de cobre. La moneda más pequeña: 100 piezas de cobre equivalen a 1 pieza de oro (PO).",
+  },
+] as const;
 
 export function EquipmentSection({ character, update }: SectionProps) {
   const klass = character.classId ? CLASS_MAP[character.classId] : null;
@@ -954,9 +1002,12 @@ export function EquipmentSection({ character, update }: SectionProps) {
       </div>
 
       <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
-        {(["pp", "gp", "sp", "cp"] as const).map((k) => (
+        {CURRENCIES.map(({ key: k, label, help }) => (
           <div key={k} className="space-y-1">
-            <Label className="text-xs uppercase tracking-wider">{k}</Label>
+            <div className="flex items-center gap-1">
+              <Label className="text-xs">{label}</Label>
+              <InfoButton title={label} body={help} />
+            </div>
             <Input
               className="h-8"
               inputMode="numeric"

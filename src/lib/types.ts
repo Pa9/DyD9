@@ -96,6 +96,8 @@ export interface Spell {
   concentration?: boolean;
   ritual?: boolean;
   desc: string;
+  /** Cómo mejora con espacios superiores o al subir de nivel */
+  upcast?: string;
   classes: string[];
 }
 
