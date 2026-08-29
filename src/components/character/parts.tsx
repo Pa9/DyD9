@@ -70,6 +70,7 @@ export function OptionCard({
   subtitle,
   meta,
   disabled,
+  info,
 }: {
   selected: boolean;
   onSelect: () => void;
@@ -77,29 +78,35 @@ export function OptionCard({
   subtitle?: string;
   meta?: string;
   disabled?: boolean;
+  /** Botón de explicación (ⓘ) que se muestra en la esquina */
+  info?: ReactNode;
 }) {
   return (
-    <button
-      type="button"
-      disabled={disabled}
-      onClick={onSelect}
-      className={cn(
-        "w-full rounded-lg border p-3 text-left transition-all",
-        selected
-          ? "border-primary bg-secondary shadow-gold"
-          : "border-border bg-card/60 hover:border-primary/50 hover:bg-secondary/60",
-        disabled && "cursor-not-allowed opacity-45",
-      )}
-    >
-      <div className="flex items-start justify-between gap-2">
-        <span className="font-display text-sm leading-tight">{title}</span>
-        {selected ? <Check className="mt-0.5 size-4 shrink-0 text-primary" /> : null}
-      </div>
-      {subtitle ? (
-        <p className="mt-1 line-clamp-3 text-xs leading-relaxed text-muted-foreground">{subtitle}</p>
-      ) : null}
-      {meta ? <p className="mt-1.5 text-[11px] uppercase tracking-wide text-primary/80">{meta}</p> : null}
-    </button>
+    <div className="relative">
+      <button
+        type="button"
+        disabled={disabled}
+        onClick={onSelect}
+        className={cn(
+          "w-full rounded-lg border p-3 text-left transition-all",
+          info && "pr-10",
+          selected
+            ? "border-primary bg-secondary shadow-gold"
+            : "border-border bg-card/60 hover:border-primary/50 hover:bg-secondary/60",
+          disabled && "cursor-not-allowed opacity-45",
+        )}
+      >
+        <div className="flex items-start justify-between gap-2">
+          <span className="font-display text-sm leading-tight">{title}</span>
+          {selected ? <Check className="mt-0.5 size-4 shrink-0 text-primary" /> : null}
+        </div>
+        {subtitle ? (
+          <p className="mt-1 line-clamp-3 text-xs leading-relaxed text-muted-foreground">{subtitle}</p>
+        ) : null}
+        {meta ? <p className="mt-1.5 text-[11px] uppercase tracking-wide text-primary/80">{meta}</p> : null}
+      </button>
+      {info ? <div className="absolute right-1.5 top-8">{info}</div> : null}
+    </div>
   );
 }
 
