@@ -1,9 +1,6 @@
 import type { Spell } from "@/lib/types";
-
-/** [id, nombre, nivel, escuela, clases, descripción, tiempo, alcance, duración] */
-type Row = [string, string, number, string, string[], string, string?, string?, string?];
-
-const B = "bard", C = "cleric", D = "druid", P = "paladin", R = "ranger", S = "sorcerer", W = "warlock", Z = "wizard";
+import { B, C, D, P, R, S, W, Z, UPCAST, type SpellRow as Row } from "./spell-row";
+import { EXTRA_ROWS } from "./spells-extra";
 
 const ROWS: Row[] = [
   // Trucos
