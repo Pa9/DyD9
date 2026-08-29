@@ -897,8 +897,8 @@ export function SpellsSection({ character, update }: SectionProps) {
 const CURRENCIES = [
   {
     key: "pp",
-    label: "PP (piezas de platino)",
-    help: "Piezas de platino. La moneda más valiosa: 1 PP equivale a 10 PO (piezas de oro), 100 PP (piezas de plata) o 1.000 PC (piezas de cobre).",
+    label: "PT (piezas de platino)",
+    help: "Piezas de platino. La moneda más valiosa: 1 PT equivale a 10 PO (piezas de oro), 100 PP (piezas de plata) o 1.000 PC (piezas de cobre).",
   },
   {
     key: "gp",
