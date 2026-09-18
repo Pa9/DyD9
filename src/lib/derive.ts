@@ -183,6 +183,7 @@ export function maxHp(c: Character): number {
 }
 
 export function armorClass(c: Character): { value: number; note: string } {
+  if (typeof c.manualAc === "number" && c.manualAc > 0) return { value: c.manualAc, note: "Manual" };
   const ab = finalAbilities(c);
   const dex = abilityMod(ab.dex);
   const names = c.equipment.map((e) => e.name.toLowerCase());
@@ -202,6 +203,7 @@ export function armorClass(c: Character): { value: number; note: string } {
 }
 
 export function speed(c: Character): number {
+  if (typeof c.manualSpeed === "number" && c.manualSpeed > 0) return c.manualSpeed;
   const base = c.speciesId ? (SPECIES_MAP[c.speciesId]?.speed ?? 30) : 30;
   let bonus = 0;
   if (c.classId === "monk" && c.level >= 2) bonus += c.level >= 16 ? 30 : c.level >= 10 ? 20 : 10;
