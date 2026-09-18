@@ -21,6 +21,10 @@ import {
   fmtMod,
   maxSpellLevel,
   spellsAllowed,
+  maxHp as autoMaxHp,
+  armorClass as autoAc,
+  speed as autoSpeed,
+  hitDie as classHitDie,
 } from "@/lib/derive";
 import type { AbilityKey, Character } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";

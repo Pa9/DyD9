@@ -29,6 +29,7 @@ import {
   SpellsSection,
   EquipmentSection,
   NotesSection,
+  ManualStatsSection,
   ChoiceGroup,
 } from "@/components/character/parts";
 import { useCharacter } from "@/hooks/useCharacters";
@@ -188,6 +189,7 @@ function CharacterPage() {
           <SpellsSection character={character} update={update} />
           <EquipmentSection character={character} update={update} />
           <NotesSection character={character} update={update} />
+          <ManualStatsSection character={character} update={update} />
         </div>
       ) : (
         <div className="space-y-5">
