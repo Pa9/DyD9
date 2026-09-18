@@ -156,7 +156,14 @@ export function hitDie(c: Character): number {
   return c.classId ? (CLASS_MAP[c.classId]?.hitDie ?? 8) : 8;
 }
 
+export function hitDiceLabel(c: Character): string {
+  return c.manualHitDice && c.manualHitDice.trim() !== ""
+    ? c.manualHitDice
+    : `${c.level}d${hitDie(c)}`;
+}
+
 export function maxHp(c: Character): number {
+  if (typeof c.manualMaxHp === "number" && c.manualMaxHp > 0) return c.manualMaxHp;
   const die = hitDie(c);
   const abilities = finalAbilities(c);
   const conMod = abilityMod(abilities.con);

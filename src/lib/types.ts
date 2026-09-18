@@ -143,6 +143,12 @@ export interface Character {
   hpRolls: Record<string, number>;
   currentHp?: number;
   tempHp?: number;
+  /** Valores manuales que sobrescriben los calculados (otras mesas/esquemas) */
+  manualMaxHp?: number | undefined;
+  manualAc?: number | undefined;
+  manualSpeed?: number | undefined;
+  manualHitDice?: string | undefined;
+  manualNotes?: string | undefined;
   notes: string;
   appearance: string;
   /** Historial de subidas de nivel */
