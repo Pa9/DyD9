@@ -21,6 +21,10 @@ import {
   fmtMod,
   maxSpellLevel,
   spellsAllowed,
+  maxHp as autoMaxHp,
+  armorClass as autoAc,
+  speed as autoSpeed,
+  hitDie as classHitDie,
 } from "@/lib/derive";
 import type { AbilityKey, Character } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
@@ -1036,6 +1040,105 @@ export function NotesSection({ character, update }: SectionProps) {
         placeholder="Trasfondo narrativo, aliados, secretos..."
         onChange={(e) => update({ notes: e.target.value })}
       />
+    </Section>
+  );
+}
+
+/* ---------------------- Estadísticas manuales ---------------------------- */
+
+export function ManualStatsSection({ character, update }: SectionProps) {
+  const auto = {
+    hp: autoMaxHp({ ...character, manualMaxHp: undefined }),
+    ac: autoAc({ ...character, manualAc: undefined }).value,
+    speed: autoSpeed({ ...character, manualSpeed: undefined }),
+    dice: `${character.level}d${classHitDie(character)}`,
+  };
+
+  const numField = (
+    key: "manualMaxHp" | "manualAc" | "manualSpeed",
+    label: string,
+    hint: string,
+  ) => (
+    <div>
+      <Label htmlFor={key} className="text-xs">
+        {label}
+      </Label>
+      <Input
+        id={key}
+        type="number"
+        min={1}
+        placeholder={hint}
+        value={character[key] ?? ""}
+        onChange={(e) => {
+          const v = e.target.value;
+          update({ [key]: v === "" ? undefined : Math.max(1, Number(v)) } as Partial<Character>);
+        }}
+      />
+      <p className="mt-1 text-[10px] text-muted-foreground">Calculado: {hint}</p>
+    </div>
+  );
+
+  const anyManual =
+    character.manualMaxHp != null ||
+    character.manualAc != null ||
+    character.manualSpeed != null ||
+    (character.manualHitDice ?? "") !== "";
+
+  return (
+    <Section
+      title="Estadísticas manuales"
+      hint="Si tu mesa usa otro esquema, escribe aquí tus valores: sobrescriben los calculados. Déjalo vacío para volver al cálculo automático."
+      action={
+        anyManual ? (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              update({
+                manualMaxHp: undefined,
+                manualAc: undefined,
+                manualSpeed: undefined,
+                manualHitDice: undefined,
+              })
+            }
+          >
+            Restaurar cálculo
+          </Button>
+        ) : null
+      }
+    >
+      <div className="space-y-4">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {numField("manualMaxHp", "Puntos de golpe máx.", String(auto.hp))}
+          {numField("manualAc", "Clase de armadura", String(auto.ac))}
+          {numField("manualSpeed", "Velocidad (pies)", String(auto.speed))}
+          <div>
+            <Label htmlFor="manualHitDice" className="text-xs">
+              Dados de golpe
+            </Label>
+            <Input
+              id="manualHitDice"
+              placeholder={auto.dice}
+              value={character.manualHitDice ?? ""}
+              onChange={(e) => update({ manualHitDice: e.target.value || undefined })}
+            />
+            <p className="mt-1 text-[10px] text-muted-foreground">Calculado: {auto.dice}</p>
+          </div>
+        </div>
+
+        <div>
+          <Label htmlFor="manualNotes" className="text-xs">
+            Reglas de la casa (opcional)
+          </Label>
+          <Textarea
+            id="manualNotes"
+            rows={3}
+            placeholder="Ej.: PG máximos por nivel, CA fija de 15, velocidad por terreno..."
+            value={character.manualNotes ?? ""}
+            onChange={(e) => update({ manualNotes: e.target.value || undefined })}
+          />
+        </div>
+      </div>
     </Section>
   );
 }

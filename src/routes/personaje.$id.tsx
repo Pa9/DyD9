@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
-import { ChevronsUp, Copy, RotateCcw, Trash2 } from "lucide-react";
+import { ChevronsDown, ChevronsUp, Copy, RotateCcw, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -29,6 +29,7 @@ import {
   SpellsSection,
   EquipmentSection,
   NotesSection,
+  ManualStatsSection,
   ChoiceGroup,
 } from "@/components/character/parts";
 import { useCharacter } from "@/hooks/useCharacters";
@@ -42,6 +43,7 @@ import {
   finalAbilities,
   fmtMod,
   hitDie,
+  hitDiceLabel,
   maxHp,
   pendingChoices,
   saveBonuses,
@@ -188,6 +190,7 @@ function CharacterPage() {
           <SpellsSection character={character} update={update} />
           <EquipmentSection character={character} update={update} />
           <NotesSection character={character} update={update} />
+          <ManualStatsSection character={character} update={update} />
         </div>
       ) : (
         <div className="space-y-5">
@@ -252,7 +255,7 @@ function StatSummary({ character }: { character: Character }) {
           <MiniStat label="Puntos de golpe" value={String(maxHp(character))} />
           <MiniStat label="Clase de armadura" value={String(ac.value)} hint={ac.note} />
           <MiniStat label="Velocidad" value={`${speed(character)} pies`} />
-          <MiniStat label="Dado de golpe" value={`${character.level}d${hitDie(character)}`} />
+          <MiniStat label="Dados de golpe" value={hitDiceLabel(character)} />
         </div>
 
         {sc ? (
@@ -401,6 +404,9 @@ function LevelUpPanel({
               </div>
               <Button onClick={levelUp} disabled={!character.classId}>
                 <ChevronsUp className="size-4" /> Subir a nivel {next}
+              </Button>
+              <Button variant="outline" onClick={levelDown} disabled={character.level <= 1}>
+                <ChevronsDown className="size-4" /> Bajar a nivel {character.level - 1}
               </Button>
             </div>
           ) : null}
