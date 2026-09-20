@@ -142,12 +142,13 @@ export function buildSheetDoc(m: SheetModel): SheetDoc {
     });
   }
 
-  if (m.features.length) {
+  const classFeatures = m.features.filter((f) => f.sourceKind !== "species");
+  if (classFeatures.length) {
     blocks.push({
       kind: "list",
       id: "rasgos",
       title: "Rasgos de clase y subclase",
-      items: m.features.map((f) => ({ name: f.name, meta: `Nivel ${f.level} · ${f.source}`, desc: f.desc })),
+      items: classFeatures.map((f) => ({ name: f.name, meta: `Nivel ${f.level} · ${f.source}`, desc: f.desc })),
     });
   }
 
