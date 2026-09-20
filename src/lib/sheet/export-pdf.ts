@@ -10,6 +10,19 @@ const PAGE_H = 297;
 const M = 14;
 const CONTENT_W = PAGE_W - M * 2;
 
+/** Las fuentes base de jsPDF sólo cubren Latin-1: sustituimos glifos ajenos. */
+const GLYPHS: [RegExp, string][] = [
+  [/[→⟶]/g, "-"],
+  [/[←⟵]/g, "*"],
+  [/[◆◇•]/g, "-"],
+  [/[’‘]/g, "'"],
+  [/[“”]/g, '"'],
+  [/[–—]/g, "-"],
+  [/…/g, "..."],
+];
+
+const ascii = (v: string) => GLYPHS.reduce((acc, [re, rep]) => acc.replace(re, rep), v);
+
 export function sheetToPdf(doc: SheetDoc): jsPDF {
   const pdf = new jsPDF({ unit: "mm", format: "a4" });
   let y = M;
@@ -24,7 +37,7 @@ export function sheetToPdf(doc: SheetDoc): jsPDF {
   const text = (value: string, size: number, style: "normal" | "bold" | "italic", width = CONTENT_W, x = M) => {
     pdf.setFont("helvetica", style);
     pdf.setFontSize(size);
-    const lines = pdf.splitTextToSize(value, width) as string[];
+    const lines = pdf.splitTextToSize(ascii(value), width) as string[];
     const lh = size * 0.42;
     for (const line of lines) {
       ensure(lh + 1);
@@ -75,11 +88,11 @@ function renderBlock(pdf: jsPDF, block: SheetBlock, ctx: Ctx) {
         const y = ctx.getY();
         pdf.setFont("helvetica", "bold");
         pdf.setFontSize(8);
-        pdf.text(`${item.label}:`, x, y);
+        pdf.text(ascii(`${item.label}:`), x, y);
         pdf.setFont("helvetica", "normal");
         pdf.setFontSize(9);
         const labelW = pdf.getTextWidth(`${item.label}: `) + 1;
-        const value = pdf.splitTextToSize(String(item.value), col - labelW - 3) as string[];
+        const value = pdf.splitTextToSize(ascii(String(item.value)), col - labelW - 3) as string[];
         pdf.text(value[0] ?? "", x + labelW, y);
         if (i % 2 === 1 || i === block.items.length - 1) ctx.setY(y + 5);
         i++;
@@ -95,7 +108,7 @@ function renderBlock(pdf: jsPDF, block: SheetBlock, ctx: Ctx) {
         pdf.setFontSize(8);
         const y = ctx.getY();
         block.columns.forEach((c, i) => {
-          pdf.text(c, x, y);
+          pdf.text(ascii(c), x, y);
           x += widths[i]!;
         });
         ctx.setY(y + 4);
@@ -103,7 +116,7 @@ function renderBlock(pdf: jsPDF, block: SheetBlock, ctx: Ctx) {
       header();
       pdf.setFont("helvetica", "normal");
       for (const row of block.rows) {
-        const cells = row.map((cell, i) => pdf.splitTextToSize(cell || "—", widths[i]! - 2) as string[]);
+        const cells = row.map((cell, i) => pdf.splitTextToSize(ascii(cell || "-"), widths[i]! - 2) as string[]);
         const h = Math.max(...cells.map((c) => c.length)) * 3.4 + 1.5;
         if (ctx.getY() + h > PAGE_H - M) {
           pdf.addPage();
