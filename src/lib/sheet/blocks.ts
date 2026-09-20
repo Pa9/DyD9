@@ -5,6 +5,7 @@
  * Cambiar el diseño visual = cambiar sólo el renderizador, no estos bloques.
  */
 import { fmtMod } from "@/lib/derive";
+import { ABILITIES } from "@/data/rules";
 import type { SheetModel } from "./model";
 
 export interface StatsBlock {
@@ -112,7 +113,7 @@ export function buildSheetDoc(m: SheetModel): SheetDoc {
     columns: ["Habilidad", "Característica", "Bonificador", "Competente", "Pericia"],
     rows: m.skills.map((s) => [
       s.name,
-      s.abilityShort ?? "",
+      ABILITIES.find((a) => a.key === s.ability)?.short ?? "",
       fmtMod(s.bonus),
       yesNo(s.proficient),
       yesNo(s.expert),
@@ -175,7 +176,7 @@ export function buildSheetDoc(m: SheetModel): SheetDoc {
       id: "magia",
       title: "Lanzamiento de conjuros",
       items: [
-        { label: "Característica", value: sc.abilityName },
+        { label: "Característica", value: ABILITIES.find((a) => a.key === sc.ability)?.name ?? "—" },
         { label: "CD de salvación", value: String(sc.dc) },
         { label: "Ataque de conjuro", value: fmtMod(sc.attack) },
         { label: "Nivel máx.", value: String(sc.maxSpellLevel) },
