@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CrearRouteImport } from './routes/crear'
+import { Route as FichaIdRouteImport } from './routes/ficha.$id'
 import { Route as PersonajeIdRouteImport } from './routes/personaje.$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -23,6 +24,11 @@ const CrearRoute = CrearRouteImport.update({
   path: '/crear',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FichaIdRoute = FichaIdRouteImport.update({
+  id: '/ficha/$id',
+  path: '/ficha/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PersonajeIdRoute = PersonajeIdRouteImport.update({
   id: '/personaje/$id',
   path: '/personaje/$id',
@@ -32,30 +38,34 @@ const PersonajeIdRoute = PersonajeIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/crear': typeof CrearRoute
+  '/ficha/$id': typeof FichaIdRoute
   '/personaje/$id': typeof PersonajeIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/crear': typeof CrearRoute
+  '/ficha/$id': typeof FichaIdRoute
   '/personaje/$id': typeof PersonajeIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/crear': typeof CrearRoute
+  '/ficha/$id': typeof FichaIdRoute
   '/personaje/$id': typeof PersonajeIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/crear' | '/personaje/$id'
+  fullPaths: '/' | '/crear' | '/ficha/$id' | '/personaje/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/crear' | '/personaje/$id'
-  id: '__root__' | '/' | '/crear' | '/personaje/$id'
+  to: '/' | '/crear' | '/ficha/$id' | '/personaje/$id'
+  id: '__root__' | '/' | '/crear' | '/ficha/$id' | '/personaje/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CrearRoute: typeof CrearRoute
+  FichaIdRoute: typeof FichaIdRoute
   PersonajeIdRoute: typeof PersonajeIdRoute
 }
 
@@ -75,6 +85,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CrearRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ficha/$id': {
+      id: '/ficha/$id'
+      path: '/ficha/$id'
+      fullPath: '/ficha/$id'
+      preLoaderRoute: typeof FichaIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/personaje/$id': {
       id: '/personaje/$id'
       path: '/personaje/$id'
@@ -88,6 +105,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CrearRoute: CrearRoute,
+  FichaIdRoute: FichaIdRoute,
   PersonajeIdRoute: PersonajeIdRoute,
 }
 export const routeTree = rootRouteImport

@@ -32,6 +32,7 @@ import {
   ManualStatsSection,
   ChoiceGroup,
 } from "@/components/character/parts";
+import { SheetActions } from "@/components/sheet/SheetActions";
 import { useCharacter } from "@/hooks/useCharacters";
 import { store } from "@/lib/storage";
 import {
@@ -178,6 +179,12 @@ function CharacterPage() {
 
       {tab === "ficha" ? (
         <div className="space-y-5">
+          <Section
+            title="Ficha exportable"
+            hint="Vista en A4 a una cara, con descarga en PDF, exportación a Excel e impresión directa."
+          >
+            <SheetActions character={character} />
+          </Section>
           <StatSummary character={character} />
           <IdentitySection character={character} update={update} />
           <SpeciesSection character={character} update={update} />
