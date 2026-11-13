@@ -1,3 +1,4 @@
+import { pruneToLevel } from "@/lib/levelup";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -347,16 +348,8 @@ function LevelUpPanel({
   const levelDown = () => {
     if (character.level <= 1) return;
     const prev = character.level - 1;
-    update((c) => {
-      const hpRolls = { ...c.hpRolls };
-      delete hpRolls[String(c.level)];
-      return {
-        level: prev,
-        hpRolls,
-        asi: c.asi.filter((a) => a.level <= prev),
-        levelLog: c.levelLog.filter((l) => l.level <= prev),
-      };
-    });
+    if (!window.confirm(`¿Bajar a nivel ${prev}? Se quitará lo ganado en niveles superiores.`)) return;
+    update((c) => pruneToLevel(c, prev));
     toast.success(`Nivel revertido a ${prev}`);
   };
 
