@@ -35,6 +35,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { InfoButton, SpellInfoButton } from "@/components/character/InfoDialog";
+import { classArt, speciesArt } from "@/data/art";
 
 export type Patch = Partial<Character> | ((c: Character) => Partial<Character>);
 export interface SectionProps {
@@ -76,7 +77,10 @@ export function OptionCard({
   meta,
   disabled,
   info,
+  image,
 }: {
+  /** Ilustración opcional de la tarjeta */
+  image?: string | undefined;
   selected: boolean;
   onSelect: () => void;
   title: string;
@@ -93,7 +97,7 @@ export function OptionCard({
         disabled={disabled}
         onClick={onSelect}
         className={cn(
-          "w-full rounded-lg border p-3 text-left transition-all",
+          "w-full overflow-hidden rounded-lg border p-3 text-left transition-all",
           info && "pr-10",
           selected
             ? "border-primary bg-secondary shadow-gold"
@@ -101,6 +105,16 @@ export function OptionCard({
           disabled && "cursor-not-allowed opacity-45",
         )}
       >
+        {image ? (
+          <img
+            src={image}
+            alt={title}
+            loading="lazy"
+            width={816}
+            height={816}
+            className="-mx-3 -mt-3 mb-2.5 aspect-[4/3] w-[calc(100%+1.5rem)] max-w-none object-cover object-top"
+          />
+        ) : null}
         <div className="flex items-start justify-between gap-2">
           <span className="font-display text-sm leading-tight">{title}</span>
           {selected ? <Check className="mt-0.5 size-4 shrink-0 text-primary" /> : null}
@@ -172,6 +186,7 @@ export function SpeciesSection({ character, update }: SectionProps) {
           <OptionCard
             key={s.id}
             title={s.name}
+            image={speciesArt(s.id)}
             subtitle={s.desc}
             meta={`${s.size} · ${s.speed} pies`}
             selected={character.speciesId === s.id}
@@ -226,16 +241,24 @@ function pruneChoices(
 
 /* --------------------------------- Clase --------------------------------- */
 
-export function ClassSection({ character, update }: SectionProps) {
+export function ClassSection({
+  character,
+  update,
+  subclassOnly,
+}: SectionProps & { subclassOnly?: boolean }) {
   const klass = character.classId ? CLASS_MAP[character.classId] : null;
   const subclassUnlocked = klass ? character.level >= klass.subclassLevel : false;
   return (
-    <Section title="Clase" hint="Define tus dados de golpe, competencias y progresión.">
-      <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
+    <Section
+      title={subclassOnly ? "Subclase" : "Clase"}
+      hint={subclassOnly ? "Elige la especialización de tu clase." : "Define tus dados de golpe, competencias y progresión."}
+    >
+      <div className={cn("grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3", subclassOnly && "hidden")}>
         {CLASSES.map((k) => (
           <OptionCard
             key={k.id}
             title={k.name}
+            image={classArt(k.id)}
             subtitle={k.desc}
             meta={`d${k.hitDie} · ${k.primary.map((p) => ABILITIES.find((a) => a.key === p)?.short).join("/")}`}
             selected={character.classId === k.id}
@@ -596,8 +619,12 @@ export function SkillsSection({ character, update }: SectionProps) {
 
 /* ---------------------------- Rasgos y elecciones ------------------------- */
 
-export function FeaturesSection({ character, update }: SectionProps) {
-  const features = featuresFor(character);
+export function FeaturesSection({
+  character,
+  update,
+  onlyLevel,
+}: SectionProps & { onlyLevel?: number }) {
+  const features = featuresFor(character).filter((f) => onlyLevel == null || f.level === onlyLevel);
   const grouped = useMemo(() => {
     const map = new Map<number, typeof features>();
     for (const f of features) {
@@ -697,8 +724,12 @@ export function ChoiceGroup({
 
 /* ------------------------ Mejoras de característica ---------------------- */
 
-export function AsiSection({ character, update }: SectionProps) {
-  const levels = asiLevelsAvailable(character);
+export function AsiSection({
+  character,
+  update,
+  onlyLevel,
+}: SectionProps & { onlyLevel?: number }) {
+  const levels = asiLevelsAvailable(character).filter((l) => onlyLevel == null || l === onlyLevel);
   const generalFeats = FEATS.filter((f) => f.category === "general" && f.id !== "ability-improvement");
 
   const setChoice = (level: number, patch: Partial<import("@/lib/types").AsiChoice>) => {
