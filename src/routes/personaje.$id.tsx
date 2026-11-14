@@ -56,11 +56,11 @@ import {
 import { ABILITIES, XP_BY_LEVEL, proficiencyBonus } from "@/data/rules";
 import type { Character } from "@/lib/types";
 
-type Tab = "ficha" | "nivel";
+type Tab = "combate" | "habilidades" | "conjuros" | "inventario" | "detalles" | "nivel";
 
 export const Route = createFileRoute("/personaje/$id")({
   validateSearch: (search: Record<string, unknown>): { tab: Tab } => ({
-    tab: search['tab'] === "nivel" ? "nivel" : "ficha",
+    tab: ["combate", "habilidades", "conjuros", "inventario", "detalles", "nivel"].includes(String(search["tab"])) ? search["tab"] as Tab : "combate",
   }),
   head: () => ({
     meta: [
@@ -153,11 +153,15 @@ function CharacterPage() {
       <div
         role="tablist"
         aria-label="Secciones del personaje"
-        className="mb-4 inline-flex gap-1 rounded-lg border border-border bg-card/60 p-1"
+        className="mb-4 flex w-full gap-1 overflow-x-auto rounded-lg border border-border bg-card/60 p-1"
       >
         {([
-          ["ficha", "Ficha"],
-          ["nivel", "Subida de nivel"],
+          ["combate", "Combate"],
+          ["habilidades", "Habilidades"],
+          ["conjuros", "Conjuros"],
+          ["inventario", "Inventario"],
+          ["detalles", "Detalles"],
+          ["nivel", "Subir nivel"],
         ] as [Tab, string][]).map(([value, label]) => (
           <button
             key={value}
@@ -169,8 +173,8 @@ function CharacterPage() {
             }
             className={
               tab === value
-                ? "rounded-md bg-secondary px-3 py-1.5 text-sm font-medium text-primary shadow-gold"
-                : "rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                ? "shrink-0 rounded-md bg-secondary px-3 py-1.5 text-sm font-medium text-primary shadow-gold"
+                : "shrink-0 rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
             }
           >
             {label}
@@ -178,34 +182,41 @@ function CharacterPage() {
         ))}
       </div>
 
-      {tab === "ficha" ? (
+      {tab !== "nivel" && <StatSummary character={character} />}
+      {tab === "combate" && (
         <div className="space-y-5">
-          <Section
-            title="Ficha exportable"
-            hint="Vista en A4 a una cara, con descarga en PDF, exportación a Excel e impresión directa."
-          >
+          <ManualStatsSection character={character} update={update} />
+          <FeaturesSection character={character} update={update} />
+        </div>
+      )}
+      {tab === "habilidades" && (
+        <div className="space-y-5">
+          <AbilitiesSection character={character} update={update} />
+          <SkillsSection character={character} update={update} />
+        </div>
+      )}
+      {tab === "conjuros" && (
+        <SpellsSection character={character} update={update} />
+      )}
+      {tab === "inventario" && (
+        <EquipmentSection character={character} update={update} />
+      )}
+      {tab === "detalles" && (
+        <div className="space-y-5">
+          <Section title="Ficha exportable" hint="Descarga en PDF, exportación a Excel e impresión.">
             <SheetActions character={character} />
           </Section>
-          <StatSummary character={character} />
           <IdentitySection character={character} update={update} />
           <SpeciesSection character={character} update={update} />
           <ClassSection character={character} update={update} />
           <BackgroundSection character={character} update={update} />
-          <AbilitiesSection character={character} update={update} />
-          <SkillsSection character={character} update={update} />
-          <FeaturesSection character={character} update={update} />
           <AsiSection character={character} update={update} />
-          <SpellsSection character={character} update={update} />
-          <EquipmentSection character={character} update={update} />
           <NotesSection character={character} update={update} />
-          <ManualStatsSection character={character} update={update} />
-        </div>
-      ) : (
-        <div className="space-y-5">
-          <LevelUpPanel character={character} update={update} />
         </div>
       )}
-
+      {tab === "nivel" && (
+        <LevelUpPanel character={character} update={update} />
+      )}
 
       <AlertDialog open={confirmDelete} onOpenChange={setConfirmDelete}>
         <AlertDialogContent>
