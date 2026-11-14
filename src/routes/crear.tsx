@@ -124,7 +124,7 @@ function CreateEditor({ id }: { id: string }) {
       return;
     }
     toast.success("Personaje creado y guardado");
-    void navigate({ to: "/personaje/$id", params: { id }, search: { tab: "ficha" } });
+    void navigate({ to: "/personaje/$id", params: { id }, search: { tab: "combate" } });
   }
 
   return (
