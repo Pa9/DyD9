@@ -29,7 +29,7 @@ export function AppSidebar() {
           {!collapsed && <>
             <div className="mt-4 px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Recientes</div>
             <div className="mt-2 space-y-1">
-              {characters.slice(0, 12).map(c => <Link key={c.id} to="/personaje/$id" params={{ id: c.id }} search={{ tab: "combate" }} onClick={() => setOpen(false)} className="flex items-center gap-2 truncate rounded-md px-3 py-2 text-sm hover:bg-secondary"><span className="size-2 shrink-0 rounded-full bg-primary" /><span className="truncate">{c.name || "Sin nombre"}</span></Link>)}
+              {[...characters].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).slice(0, 12).map(c => <Link key={c.id} to="/personaje/$id" params={{ id: c.id }} search={{ tab: "combate" }} onClick={() => setOpen(false)} className="flex items-center gap-2 truncate rounded-md px-3 py-2 text-sm hover:bg-secondary"><span className="size-2 shrink-0 rounded-full bg-primary" /><span className="truncate">{c.name || "Sin nombre"}</span></Link>)}
               {!characters.length && <p className="px-3 py-2 text-xs text-muted-foreground">Todavía no hay personajes</p>}
             </div>
           </>}
