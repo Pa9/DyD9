@@ -134,7 +134,7 @@ function CharacterPage() {
               const copy = store.duplicate(character.id);
               if (copy) {
                 toast.success("Personaje duplicado");
-                void navigate({ to: "/personaje/$id", params: { id: copy.id }, search: { tab: "ficha" } });
+                void navigate({ to: "/personaje/$id", params: { id: copy.id }, search: { tab: "combate" } });
               }
             }}
           >
