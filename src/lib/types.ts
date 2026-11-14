@@ -143,6 +143,10 @@ export interface Character {
   hpRolls: Record<string, number>;
   currentHp?: number;
   tempHp?: number;
+  conditions?: string[];
+  deathSaves?: { successes: number; failures: number };
+  usedSpellSlots?: Record<string, number>;
+  usedPactSlots?: number;
   /** Valores manuales que sobrescriben los calculados (otras mesas/esquemas) */
   manualMaxHp?: number | undefined;
   manualAc?: number | undefined;
