@@ -34,6 +34,7 @@ import {
   ChoiceGroup,
 } from "@/components/character/parts";
 import { SheetActions } from "@/components/sheet/SheetActions";
+import { CombatPanel } from "@/components/character/CombatPanel";
 import { useCharacter } from "@/hooks/useCharacters";
 import { store } from "@/lib/storage";
 import {
@@ -185,6 +186,7 @@ function CharacterPage() {
       {tab !== "nivel" && <StatSummary character={character} />}
       {tab === "combate" && (
         <div className="space-y-5">
+          <CombatPanel character={character} update={update} />
           <ManualStatsSection character={character} update={update} />
           <FeaturesSection character={character} update={update} />
         </div>
