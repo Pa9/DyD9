@@ -30,14 +30,14 @@ export const Route = createFileRoute("/crear")({
 });
 
 const STEPS = [
-  "Identidad",
+  "Datos",
   "Especie",
   "Clase",
   "Trasfondo",
-  "Características",
+  "Atributos",
   "Habilidades",
   "Rasgos",
-  "Conjuros",
+  "Magia",
   "Equipo",
   "Notas",
   "Finalizar",
@@ -139,20 +139,6 @@ function CreateEditor({ id }: { id: string }) {
         </div>
       </header>
 
-      <nav className="flex flex-wrap gap-1.5" aria-label="Pasos de creación">
-        {STEPS.map((label, index) => (
-          <button
-            key={label}
-            type="button"
-            disabled={index > maxReached}
-            onClick={() => goTo(index)}
-            aria-current={index === step ? "step" : undefined}
-            className={`rounded-md border px-2.5 py-1.5 text-xs transition-colors ${index === step ? "border-primary bg-secondary text-primary" : "border-border text-muted-foreground"} disabled:cursor-not-allowed disabled:opacity-40`}
-          >
-            {index + 1}. {label}
-          </button>
-        ))}
-      </nav>
 
       {step < sections.length ? sections[step] : (
         <section className="panel space-y-4 p-5">
@@ -171,25 +157,35 @@ function CreateEditor({ id }: { id: string }) {
         </section>
       )}
 
-      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border pt-4">
-        <div className="flex gap-2">
+      <div className="sticky bottom-0 z-30 -mx-4 space-y-2 border-t border-border bg-background/95 px-4 py-3 shadow-lg backdrop-blur sm:mx-0 sm:rounded-lg sm:border sm:px-3">
+        <div className="flex items-center justify-between gap-2">
           <Button variant="outline" disabled={step === 0} onClick={() => goTo(step - 1)}>
             Anterior
           </Button>
           {step < STEPS.length - 1 ? (
-            <Button onClick={nextStep}>Siguiente paso</Button>
+            <Button onClick={nextStep}>Confirmar y siguiente</Button>
           ) : (
             <Button onClick={finish} disabled={status.missing.length > 0}>Guardar y ver ficha</Button>
           )}
         </div>
-        <Button
-          variant="ghost"
-          onClick={() => {
-            store.remove(id);
-            void navigate({ to: "/" });
-          }}
-        >
-          Descartar
+        <nav className="flex gap-1.5 overflow-x-auto pb-1" aria-label="Apartados de creación">
+          {STEPS.map((label, index) => (
+            <button
+              key={label}
+              type="button"
+              disabled={index > maxReached}
+              onClick={() => goTo(index)}
+              aria-current={index === step ? "step" : undefined}
+              className={`shrink-0 rounded-full border px-2.5 py-1 text-xs transition-colors ${index === step ? "border-primary bg-secondary font-semibold text-primary" : "border-border text-muted-foreground"} disabled:cursor-not-allowed disabled:opacity-40`}
+            >
+              {label}
+            </button>
+          ))}
+        </nav>
+      </div>
+      <div className="pb-2 text-right">
+        <Button variant="ghost" size="sm" onClick={() => { store.remove(id); void navigate({ to: "/" }); }}>
+          Descartar personaje
         </Button>
       </div>
     </main>
