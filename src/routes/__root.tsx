@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 import { Dices } from "lucide-react";
+import { AppSidebar } from "@/components/AppSidebar";
 import { Toaster } from "@/components/ui/sonner";
 
 import appCss from "../styles.css?url";
@@ -129,9 +130,13 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SiteHeader />
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <div className="min-h-screen lg:flex">
+        <AppSidebar />
+        <div className="min-w-0 flex-1">
+          <SiteHeader />
+          <Outlet />
+        </div>
+      </div>
       <Toaster position="top-center" />
     </QueryClientProvider>
   );
