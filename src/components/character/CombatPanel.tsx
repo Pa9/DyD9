@@ -44,11 +44,13 @@ export function CombatPanel({ character, update }: SectionProps) {
     }));
   const deathRoll = (roll: number) => {
     if (roll === 20) {
+      if (hp > 0 || death.successes >= 3 || death.failures >= 3) return;
       update({ currentHp: 1, deathSaves: { successes: 0, failures: 0 } });
       return;
     }
     update((c) => {
       const d = c.deathSaves ?? { successes: 0, failures: 0 };
+      if (d.successes >= 3 || d.failures >= 3 || (c.currentHp ?? maxHp(c)) > 0) return {};
       const successes = Math.min(3, d.successes + (roll >= 10 ? 1 : 0));
       const failures = Math.min(3, d.failures + (roll === 1 ? 2 : roll < 10 ? 1 : 0));
       return { deathSaves: { successes, failures } };
@@ -197,7 +199,7 @@ export function CombatPanel({ character, update }: SectionProps) {
                 aria-pressed={active}
                 onClick={() =>
                   update((c) => ({
-                    conditions: active
+                    conditions: (c.conditions ?? []).includes(name)
                       ? (c.conditions ?? []).filter((x) => x !== name)
                       : [...(c.conditions ?? []), name],
                   }))
