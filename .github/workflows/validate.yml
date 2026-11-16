@@ -46,5 +46,7 @@ jobs:
           fi
       - name: Compilar aplicación
         run: bun run build
+      - name: Ejecutar pruebas de reglas
+        run: bun test
       - name: Comprobar lint
         run: bun run lint
