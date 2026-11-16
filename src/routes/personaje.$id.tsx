@@ -49,6 +49,10 @@ import {
   hitDiceLabel,
   maxHp,
   pendingChoices,
+  asiLevelsAvailable,
+  cantripsAllowed,
+  spellsAllowed,
+  casterType,
   saveBonuses,
   skillLines,
   speed,
@@ -340,6 +344,21 @@ function LevelUpPanel({
   const preview = character.classId ? featuresGainedBetween(character, character.level, next) : [];
   const pending = pendingChoices(character);
   const atMax = character.level >= 20;
+  const missingBeforeLevelUp: string[] = [];
+  if (!character.name.trim()) missingBeforeLevelUp.push("nombre");
+  if (!character.speciesId) missingBeforeLevelUp.push("especie");
+  if (!character.backgroundId) missingBeforeLevelUp.push("trasfondo");
+  if (pending.length) missingBeforeLevelUp.push("elecciones de rasgos");
+  if (asiLevelsAvailable(character).some((level) => !character.asi.some((a) => a.level === level))) {
+    missingBeforeLevelUp.push("mejoras de característica o dotes");
+  }
+  if (character.level >= 3 && character.classId && !character.subclassId) {
+    missingBeforeLevelUp.push("subclase");
+  }
+  if (casterType(character)) {
+    if (character.cantrips.length < cantripsAllowed(character)) missingBeforeLevelUp.push("trucos");
+    if (character.spells.length < spellsAllowed(character)) missingBeforeLevelUp.push("conjuros");
+  }
 
   const levelUp = () => {
     if (!character.classId) {
@@ -347,6 +366,10 @@ function LevelUpPanel({
       return;
     }
     if (atMax) return;
+    if (missingBeforeLevelUp.length) {
+      toast.error("Completa antes: " + missingBeforeLevelUp.join(", "));
+      return;
+    }
     update((c) => ({
       level: next,
       ...(roll === ""
@@ -415,13 +438,19 @@ function LevelUpPanel({
                   }}
                 />
               </div>
-              <Button onClick={levelUp} disabled={!character.classId}>
+              <Button onClick={levelUp} disabled={!character.classId || missingBeforeLevelUp.length > 0}>
                 <ChevronsUp className="size-4" /> Subir a nivel {next}
               </Button>
               <Button variant="outline" onClick={levelDown} disabled={character.level <= 1}>
                 <ChevronsDown className="size-4" /> Bajar a nivel {character.level - 1}
               </Button>
             </div>
+          ) : null}
+
+          {missingBeforeLevelUp.length > 0 && character.classId && !atMax ? (
+            <p className="text-sm text-destructive" role="status">
+              Antes de subir de nivel, completa: {missingBeforeLevelUp.join(", ")}.
+            </p>
           ) : null}
 
           {!character.classId ? (
