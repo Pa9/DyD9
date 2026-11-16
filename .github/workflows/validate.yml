@@ -22,7 +22,7 @@ jobs:
       - name: Instalar dependencias
         run: bun install --frozen-lockfile
       - name: Corregir formato y reglas automáticas
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
         run: |
           bunx prettier --write .
           bunx eslint . --fix || true
