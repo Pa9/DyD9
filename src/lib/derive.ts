@@ -325,25 +325,40 @@ export function characterSubtitle(c: Character): string {
   return parts.join(" · ");
 }
 
-/** Validación de completitud para la ficha */
-export function completeness(c: Character): { done: number; total: number; missing: string[] } {
+/** Decisiones necesarias antes de avanzar al siguiente nivel. */
+export function levelUpRequirements(c: Character): string[] {
   const missing: string[] = [];
   if (!c.name.trim()) missing.push("Nombre");
   if (!c.speciesId) missing.push("Especie");
   if (!c.classId) missing.push("Clase");
   if (!c.backgroundId) missing.push("Trasfondo");
-  const bgPoints = Object.values(c.backgroundAbilities).reduce((a, b) => a + (b ?? 0), 0);
-  if (bgPoints !== 3) missing.push("Mejoras de trasfondo");
+  const bg = c.backgroundId ? BACKGROUND_MAP[c.backgroundId] : null;
+  const entries = Object.entries(c.backgroundAbilities);
+  const values = entries.map(([, value]) => value ?? 0);
+  const total = values.reduce((sum, value) => sum + value, 0);
+  const validSpread = (values.length === 2 && values.includes(2) && values.includes(1))
+    || (values.length === 3 && values.every((value) => value === 1));
+  if (!bg || total !== 3 || !validSpread || entries.some(([key]) => !bg.abilityOptions.includes(key as AbilityKey))) {
+    missing.push("Mejoras de trasfondo");
+  }
   if (c.skillProficiencies.length < classSkillCount(c)) missing.push("Habilidades de clase");
-  if (c.level >= 3 && c.classId && !c.subclassId) missing.push("Subclase");
+  const klass = c.classId ? CLASS_MAP[c.classId] : null;
+  if (klass && c.level >= klass.subclassLevel && !c.subclassId) missing.push("Subclase");
   const ct = casterType(c);
   if (ct) {
     if (c.cantrips.length < cantripsAllowed(c)) missing.push("Trucos");
     if (c.spells.length < spellsAllowed(c)) missing.push("Conjuros");
   }
-  if (asiLevelsAvailable(c).some((l) => !c.asi.find((a) => a.level === l)))
+  if (asiLevelsAvailable(c).some((level) => !c.asi.some((a) => a.level === level && (a.type === "feat" ? !!a.featId : (a.abilities?.length ?? 0) === 2)))) {
     missing.push("Mejoras de característica");
+  }
   if (pendingChoices(c).length) missing.push("Elecciones de rasgos");
-  const total = 9;
+  return missing;
+}
+
+/** Validación de completitud para la ficha */
+export function completeness(c: Character): { done: number; total: number; missing: string[] } {
+  const missing = levelUpRequirements(c);
+  const total = 11;
   return { done: Math.max(0, total - missing.length), total, missing };
 }
