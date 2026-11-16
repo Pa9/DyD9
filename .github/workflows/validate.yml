@@ -36,6 +36,14 @@ jobs:
             git commit -m "style: aplicar formato automático"
             git push
           fi
+      - name: Verificar formato guardado en el repositorio
+        if: github.event_name == 'pull_request'
+        run: |
+          if ! git diff --quiet; then
+            echo "::error::El formato corregido aún no está guardado en la rama."
+            git diff --stat
+            exit 1
+          fi
       - name: Compilar aplicación
         run: bun run build
       - name: Comprobar lint
