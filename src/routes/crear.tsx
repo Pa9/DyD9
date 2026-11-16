@@ -124,6 +124,7 @@ function CreateEditor({ id }: { id: string }) {
       toast.error("Completa antes: " + status.missing.join(", "));
       return;
     }
+    store.update(id, { targetLevel });
     toast.success("Personaje creado y guardado");
     void navigate({ to: "/personaje/$id", params: { id }, search: { tab: targetLevel > 1 ? "nivel" : "combate" } });
   }
