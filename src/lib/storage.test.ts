@@ -9,8 +9,12 @@ Object.defineProperty(globalThis, "window", {
   value: {
     localStorage: {
       getItem: (key: string) => data.get(key) ?? null,
-      setItem: (key: string, value: string) => { data.set(key, value); },
-      removeItem: (key: string) => { data.delete(key); },
+      setItem: (key: string, value: string) => {
+        data.set(key, value);
+      },
+      removeItem: (key: string) => {
+        data.delete(key);
+      },
     },
   },
 });
