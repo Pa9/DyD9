@@ -492,6 +492,14 @@ function LevelUpPanel({
         </Section>
       ) : null}
 
+      {character.level >= 3 && character.classId && !character.subclassId ? (
+        <ClassSection character={character} update={update} subclassOnly />
+      ) : null}
+
+      {missingBeforeLevelUp.some((item) => item === "Trucos" || item === "Conjuros") ? (
+        <SpellsSection character={character} update={update} />
+      ) : null}
+
       <AsiSection character={character} update={update} />
 
       <Section title="Historial de progresión" hint="Cada nivel alcanzado con su fecha.">
