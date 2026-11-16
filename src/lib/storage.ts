@@ -51,22 +51,49 @@ function isImportableCharacter(value: unknown): value is Character {
   const currency = c.currency;
   const abilityKeys = ["str", "dex", "con", "int", "wis", "cha"];
   return (
-    typeof c.id === "string" && c.id.length > 0 &&
+    typeof c.id === "string" &&
+    c.id.length > 0 &&
     typeof c.name === "string" &&
-    Number.isInteger(c.level) && (c.level as number) >= 1 && (c.level as number) <= 20 &&
+    Number.isInteger(c.level) &&
+    (c.level as number) >= 1 &&
+    (c.level as number) <= 20 &&
     (c.speciesId === null || typeof c.speciesId === "string") &&
     (c.classId === null || typeof c.classId === "string") &&
     (c.backgroundId === null || typeof c.backgroundId === "string") &&
-    !!abilities && typeof abilities === "object" && !Array.isArray(abilities) &&
-    abilityKeys.every((key) => typeof (abilities as Record<string, unknown>)[key] === "number" && Number.isFinite((abilities as Record<string, number>)[key])) &&
-    !!currency && typeof currency === "object" && !Array.isArray(currency) &&
-    ["cp", "sp", "gp", "pp"].every((key) => typeof (currency as Record<string, unknown>)[key] === "number") &&
-    !!c.backgroundAbilities && typeof c.backgroundAbilities === "object" &&
-    !!c.choices && typeof c.choices === "object" &&
-    !!c.hpRolls && typeof c.hpRolls === "object" &&
-    ["skillProficiencies", "expertise", "asi", "cantrips", "spells", "preparedSpells", "equipment", "levelLog"].every((key) => Array.isArray(c[key])) &&
-    typeof c.notes === "string" && typeof c.appearance === "string" &&
-    typeof c.createdAt === "string" && typeof c.updatedAt === "string"
+    !!abilities &&
+    typeof abilities === "object" &&
+    !Array.isArray(abilities) &&
+    abilityKeys.every(
+      (key) =>
+        typeof (abilities as Record<string, unknown>)[key] === "number" &&
+        Number.isFinite((abilities as Record<string, number>)[key]),
+    ) &&
+    !!currency &&
+    typeof currency === "object" &&
+    !Array.isArray(currency) &&
+    ["cp", "sp", "gp", "pp"].every(
+      (key) => typeof (currency as Record<string, unknown>)[key] === "number",
+    ) &&
+    !!c.backgroundAbilities &&
+    typeof c.backgroundAbilities === "object" &&
+    !!c.choices &&
+    typeof c.choices === "object" &&
+    !!c.hpRolls &&
+    typeof c.hpRolls === "object" &&
+    [
+      "skillProficiencies",
+      "expertise",
+      "asi",
+      "cantrips",
+      "spells",
+      "preparedSpells",
+      "equipment",
+      "levelLog",
+    ].every((key) => Array.isArray(c[key])) &&
+    typeof c.notes === "string" &&
+    typeof c.appearance === "string" &&
+    typeof c.createdAt === "string" &&
+    typeof c.updatedAt === "string"
   );
 }
 

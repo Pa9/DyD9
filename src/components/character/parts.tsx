@@ -120,9 +120,13 @@ export function OptionCard({
           {selected ? <Check className="mt-0.5 size-4 shrink-0 text-primary" /> : null}
         </div>
         {subtitle ? (
-          <p className="mt-1 line-clamp-3 text-xs leading-relaxed text-muted-foreground">{subtitle}</p>
+          <p className="mt-1 line-clamp-3 text-xs leading-relaxed text-muted-foreground">
+            {subtitle}
+          </p>
         ) : null}
-        {meta ? <p className="mt-1.5 text-[11px] uppercase tracking-wide text-primary/80">{meta}</p> : null}
+        {meta ? (
+          <p className="mt-1.5 text-[11px] uppercase tracking-wide text-primary/80">{meta}</p>
+        ) : null}
       </button>
       {info ? <div className="absolute right-1.5 top-8">{info}</div> : null}
     </div>
@@ -251,7 +255,11 @@ export function ClassSection({
   return (
     <Section
       title={subclassOnly ? "Subclase" : "Clase"}
-      hint={subclassOnly ? "Elige la especialización de tu clase." : "Define tus dados de golpe, competencias y progresión."}
+      hint={
+        subclassOnly
+          ? "Elige la especialización de tu clase."
+          : "Define tus dados de golpe, competencias y progresión."
+      }
     >
       <div className={cn("grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3", subclassOnly && "hidden")}>
         {CLASSES.map((k) => (
@@ -301,7 +309,8 @@ export function ClassSection({
               {klass.saves.map((s) => ABILITIES.find((a) => a.key === s)?.name).join(", ")}
             </p>
             <p>
-              <span className="text-foreground">Armaduras:</span> {klass.armor.join(", ") || "Ninguna"}
+              <span className="text-foreground">Armaduras:</span>{" "}
+              {klass.armor.join(", ") || "Ninguna"}
             </p>
             <p>
               <span className="text-foreground">Armas:</span> {klass.weapons.join(", ")}
@@ -338,7 +347,10 @@ export function BackgroundSection({ character, update }: SectionProps) {
   };
 
   return (
-    <Section title="Trasfondo" hint="Otorga habilidades, una dote de origen y mejoras de característica.">
+    <Section
+      title="Trasfondo"
+      hint="Otorga habilidades, una dote de origen y mejoras de característica."
+    >
       <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
         {BACKGROUNDS.map((b) => (
           <OptionCard
@@ -449,7 +461,9 @@ export function AbilitiesSection({ character, update }: SectionProps) {
                 </div>
                 <div className="text-right">
                   <p className="font-display text-2xl text-primary">{final[a.key]}</p>
-                  <p className="text-xs text-muted-foreground">{fmtMod(abilityMod(final[a.key]))}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {fmtMod(abilityMod(final[a.key]))}
+                  </p>
                 </div>
               </div>
               <div className="mt-2 flex items-center gap-2">
@@ -510,9 +524,16 @@ export function SkillsSection({ character, update }: SectionProps) {
   const klass = character.classId ? CLASS_MAP[character.classId] : null;
   const allowed = classSkillCount(character);
   const chosen = character.skillProficiencies;
-  const bgSkills = character.backgroundId ? (BACKGROUND_MAP[character.backgroundId]?.skills ?? []) : [];
+  const bgSkills = character.backgroundId
+    ? (BACKGROUND_MAP[character.backgroundId]?.skills ?? [])
+    : [];
   const options = klass
-    ? [...new Set([...klass.skillOptions, ...(character.speciesId === "human" ? Object.keys(SKILL_MAP) : [])])]
+    ? [
+        ...new Set([
+          ...klass.skillOptions,
+          ...(character.speciesId === "human" ? Object.keys(SKILL_MAP) : []),
+        ]),
+      ]
     : [];
   const expAllowed = expertiseAllowed(character);
   const { proficient } = allSkillProficiencies(character);
@@ -556,8 +577,7 @@ export function SkillsSection({ character, update }: SectionProps) {
           const fromBg = bgSkills.includes(id);
           const active = chosen.includes(id) || fromBg;
           const isExpert = character.expertise.includes(id);
-          const bonus =
-            abilityMod(final[skill.ability]) + (isExpert ? pb * 2 : active ? pb : 0);
+          const bonus = abilityMod(final[skill.ability]) + (isExpert ? pb * 2 : active ? pb : 0);
           return (
             <div
               key={id}
@@ -730,7 +750,9 @@ export function AsiSection({
   onlyLevel,
 }: SectionProps & { onlyLevel?: number }) {
   const levels = asiLevelsAvailable(character).filter((l) => onlyLevel == null || l === onlyLevel);
-  const generalFeats = FEATS.filter((f) => f.category === "general" && f.id !== "ability-improvement");
+  const generalFeats = FEATS.filter(
+    (f) => f.category === "general" && f.id !== "ability-improvement",
+  );
 
   const setChoice = (level: number, patch: Partial<import("@/lib/types").AsiChoice>) => {
     update((c) => {
@@ -885,7 +907,9 @@ export function SpellsSection({ character, update }: SectionProps) {
                 subtitle={s.desc}
                 meta={`${s.school} · ${s.castingTime}`}
                 selected={character.cantrips.includes(s.id)}
-                disabled={!character.cantrips.includes(s.id) && character.cantrips.length >= cantripLimit}
+                disabled={
+                  !character.cantrips.includes(s.id) && character.cantrips.length >= cantripLimit
+                }
                 onSelect={() => toggle(s.id, true)}
                 info={<SpellInfoButton spell={s} />}
               />
@@ -909,7 +933,9 @@ export function SpellsSection({ character, update }: SectionProps) {
                   subtitle={s.desc}
                   meta={`${s.school} · ${s.range} · ${s.duration}`}
                   selected={character.spells.includes(s.id)}
-                  disabled={!character.spells.includes(s.id) && character.spells.length >= spellLimit}
+                  disabled={
+                    !character.spells.includes(s.id) && character.spells.length >= spellLimit
+                  }
                   onSelect={() => toggle(s.id, false)}
                   info={<SpellInfoButton spell={s} />}
                 />
@@ -975,10 +1001,19 @@ export function EquipmentSection({ character, update }: SectionProps) {
   };
 
   return (
-    <Section title="Inventario" hint="Añade el equipo inicial de clase y trasfondo, o tus propios objetos.">
+    <Section
+      title="Inventario"
+      hint="Añade el equipo inicial de clase y trasfondo, o tus propios objetos."
+    >
       <div className="flex flex-wrap gap-2">
         {klass?.equipment.map((p) => (
-          <Button key={p.id} type="button" size="sm" variant="outline" onClick={() => applyPackage(p.id)}>
+          <Button
+            key={p.id}
+            type="button"
+            size="sm"
+            variant="outline"
+            onClick={() => applyPackage(p.id)}
+          >
             <Plus className="mr-1.5 size-3.5" /> {p.label}
           </Button>
         ))}
@@ -991,7 +1026,10 @@ export function EquipmentSection({ character, update }: SectionProps) {
 
       <div className="mt-4 space-y-1.5">
         {character.equipment.map((item, idx) => (
-          <div key={`${item.name}-${idx}`} className="flex items-center gap-2 rounded-md border border-border bg-card/50 px-3 py-2">
+          <div
+            key={`${item.name}-${idx}`}
+            className="flex items-center gap-2 rounded-md border border-border bg-card/50 px-3 py-2"
+          >
             <Input
               className="h-8 flex-1"
               value={item.name}
@@ -1020,7 +1058,9 @@ export function EquipmentSection({ character, update }: SectionProps) {
               size="icon"
               variant="ghost"
               className="size-8 text-destructive"
-              onClick={() => update((c) => ({ equipment: c.equipment.filter((_, i) => i !== idx) }))}
+              onClick={() =>
+                update((c) => ({ equipment: c.equipment.filter((_, i) => i !== idx) }))
+              }
             >
               <Trash2 className="size-4" />
             </Button>
@@ -1030,7 +1070,9 @@ export function EquipmentSection({ character, update }: SectionProps) {
           type="button"
           variant="outline"
           size="sm"
-          onClick={() => update((c) => ({ equipment: [...c.equipment, { name: "Objeto nuevo", qty: 1 }] }))}
+          onClick={() =>
+            update((c) => ({ equipment: [...c.equipment, { name: "Objeto nuevo", qty: 1 }] }))
+          }
         >
           <Plus className="mr-1.5 size-3.5" /> Añadir objeto
         </Button>

@@ -181,7 +181,12 @@ export function buildSheetModel(c: Character): SheetModel {
 
   const feats: SheetModel["feats"] = [];
   if (bg && FEAT_MAP[bg.featId]) {
-    feats.push({ level: 1, name: FEAT_MAP[bg.featId]!.name, desc: FEAT_MAP[bg.featId]!.desc, origin: `Trasfondo: ${bg.name}` });
+    feats.push({
+      level: 1,
+      name: FEAT_MAP[bg.featId]!.name,
+      desc: FEAT_MAP[bg.featId]!.desc,
+      origin: `Trasfondo: ${bg.name}`,
+    });
   }
   for (const a of c.asi) {
     if (a.level > c.level || a.type !== "feat" || !a.featId) continue;
@@ -205,7 +210,9 @@ export function buildSheetModel(c: Character): SheetModel {
   const spellsByLevel = Array.from({ length: 9 }, (_, i) => i + 1)
     .map((level) => ({
       level,
-      spells: known.filter((s) => s.level === level).sort((a, b) => a.name.localeCompare(b.name, "es")),
+      spells: known
+        .filter((s) => s.level === level)
+        .sort((a, b) => a.name.localeCompare(b.name, "es")),
       prepared: c.preparedSpells,
     }))
     .filter((g) => g.spells.length > 0);
@@ -289,7 +296,10 @@ export function buildSheetModel(c: Character): SheetModel {
 }
 
 /** Progresión 1→20: qué obtiene el personaje en cada nivel (desbloqueado o no) */
-function buildProgression(c: Character, resourceDefs: ReturnType<typeof resourcesForClass>): ProgressionRow[] {
+function buildProgression(
+  c: Character,
+  resourceDefs: ReturnType<typeof resourcesForClass>,
+): ProgressionRow[] {
   const klass = c.classId ? CLASS_MAP[c.classId] : null;
   const sub = klass?.subclasses.find((s) => s.id === c.subclassId) ?? null;
   const species = c.speciesId ? SPECIES_MAP[c.speciesId] : null;
@@ -297,10 +307,13 @@ function buildProgression(c: Character, resourceDefs: ReturnType<typeof resource
   return Array.from({ length: 20 }, (_, i) => i + 1).map((level) => {
     const entries: ProgressionEntry[] = [];
     if (species) {
-      for (const t of species.traits) if (t.level === level) entries.push({ name: t.name, source: species.name, kind: "species" });
+      for (const t of species.traits)
+        if (t.level === level)
+          entries.push({ name: t.name, source: species.name, kind: "species" });
     }
     if (klass) {
-      for (const f of klass.features) if (f.level === level) entries.push({ name: f.name, source: klass.name, kind: "class" });
+      for (const f of klass.features)
+        if (f.level === level) entries.push({ name: f.name, source: klass.name, kind: "class" });
       if (klass.subclassLevel === level) {
         entries.push({
           name: sub ? sub.name : "Elegir subclase",
@@ -322,7 +335,8 @@ function buildProgression(c: Character, resourceDefs: ReturnType<typeof resource
       }
     }
     if (sub) {
-      for (const f of sub.features) if (f.level === level) entries.push({ name: f.name, source: sub.name, kind: "subclass" });
+      for (const f of sub.features)
+        if (f.level === level) entries.push({ name: f.name, source: sub.name, kind: "subclass" });
     }
 
     const at = { ...c, level };

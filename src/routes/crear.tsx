@@ -16,7 +16,15 @@ import {
 } from "@/components/character/parts";
 import { useCharacter } from "@/hooks/useCharacters";
 import { createCharacter, store } from "@/lib/storage";
-import { classSkillCount, completeness, pendingChoices, casterType, cantripsAllowed, spellsAllowed, levelUpRequirements } from "@/lib/derive";
+import {
+  classSkillCount,
+  completeness,
+  pendingChoices,
+  casterType,
+  cantripsAllowed,
+  spellsAllowed,
+  levelUpRequirements,
+} from "@/lib/derive";
 import type { Character } from "@/lib/types";
 
 export const Route = createFileRoute("/crear")({
@@ -45,23 +53,34 @@ const STEPS = [
 
 function stepError(c: Character, step: number): string | null {
   switch (step) {
-    case 0: return c.name.trim() ? null : "Escribe el nombre del personaje.";
-    case 1: return c.speciesId ? null : "Selecciona una especie.";
-    case 2: return c.classId ? null : "Selecciona una clase.";
-    case 3: return c.backgroundId ? null : "Selecciona un trasfondo.";
-    case 4: return levelUpRequirements(c).includes("Mejoras de trasfondo")
-      ? "Reparte correctamente las mejoras de características del trasfondo." : null;
-    case 5: return c.skillProficiencies.length >= classSkillCount(c)
-      ? null : "Selecciona las habilidades de clase necesarias.";
-    case 6: return pendingChoices(c).length === 0
-      ? null : "Completa las elecciones de rasgos pendientes.";
+    case 0:
+      return c.name.trim() ? null : "Escribe el nombre del personaje.";
+    case 1:
+      return c.speciesId ? null : "Selecciona una especie.";
+    case 2:
+      return c.classId ? null : "Selecciona una clase.";
+    case 3:
+      return c.backgroundId ? null : "Selecciona un trasfondo.";
+    case 4:
+      return levelUpRequirements(c).includes("Mejoras de trasfondo")
+        ? "Reparte correctamente las mejoras de características del trasfondo."
+        : null;
+    case 5:
+      return c.skillProficiencies.length >= classSkillCount(c)
+        ? null
+        : "Selecciona las habilidades de clase necesarias.";
+    case 6:
+      return pendingChoices(c).length === 0
+        ? null
+        : "Completa las elecciones de rasgos pendientes.";
     case 7: {
       if (!casterType(c)) return null;
       if (c.cantrips.length < cantripsAllowed(c)) return "Selecciona los trucos disponibles.";
       if (c.spells.length < spellsAllowed(c)) return "Selecciona los conjuros disponibles.";
       return null;
     }
-    default: return null;
+    default:
+      return null;
   }
 }
 
@@ -126,7 +145,11 @@ function CreateEditor({ id }: { id: string }) {
     }
     store.update(id, { targetLevel });
     toast.success("Personaje creado y guardado");
-    void navigate({ to: "/personaje/$id", params: { id }, search: { tab: targetLevel > 1 ? "nivel" : "combate" } });
+    void navigate({
+      to: "/personaje/$id",
+      params: { id },
+      search: { tab: targetLevel > 1 ? "nivel" : "combate" },
+    });
   }
 
   return (
@@ -134,15 +157,26 @@ function CreateEditor({ id }: { id: string }) {
       <header className="space-y-2">
         <h1 className="font-display text-2xl tracking-wide">Crear personaje paso a paso</h1>
         <p className="text-sm text-muted-foreground">
-          Nivel inicial 1 · Paso {step + 1} de {STEPS.length}: {STEPS[step]}. Los cambios se guardan automáticamente.
+          Nivel inicial 1 · Paso {step + 1} de {STEPS.length}: {STEPS[step]}. Los cambios se guardan
+          automáticamente.
         </p>
-        <div className="h-2 overflow-hidden rounded-full bg-secondary" role="progressbar" aria-valuenow={step + 1} aria-valuemin={1} aria-valuemax={STEPS.length}>
-          <div className="h-full bg-primary transition-all" style={{ width: `${((step + 1) / STEPS.length) * 100}%` }} />
+        <div
+          className="h-2 overflow-hidden rounded-full bg-secondary"
+          role="progressbar"
+          aria-valuenow={step + 1}
+          aria-valuemin={1}
+          aria-valuemax={STEPS.length}
+        >
+          <div
+            className="h-full bg-primary transition-all"
+            style={{ width: `${((step + 1) / STEPS.length) * 100}%` }}
+          />
         </div>
       </header>
 
-
-      {step < sections.length ? sections[step] : (
+      {step < sections.length ? (
+        sections[step]
+      ) : (
         <section className="panel space-y-4 p-5">
           <h2 className="font-display text-xl">Revisar y terminar</h2>
           <p className="text-sm text-muted-foreground">
@@ -152,12 +186,18 @@ function CreateEditor({ id }: { id: string }) {
           </p>
           {status.missing.length ? (
             <ul className="list-inside list-disc space-y-1 text-sm">
-              {status.missing.map((item) => <li key={item}>{item}</li>)}
+              {status.missing.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
             </ul>
           ) : null}
-          <p className="text-sm">Completado: {status.done}/{status.total}</p>
+          <p className="text-sm">
+            Completado: {status.done}/{status.total}
+          </p>
           <div className="space-y-2">
-            <label htmlFor="target-level" className="block text-sm font-medium">Nivel objetivo de creación</label>
+            <label htmlFor="target-level" className="block text-sm font-medium">
+              Nivel objetivo de creación
+            </label>
             <select
               id="target-level"
               value={targetLevel}
@@ -165,14 +205,16 @@ function CreateEditor({ id }: { id: string }) {
               className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
             >
               {Array.from({ length: 20 }, (_, index) => index + 1).map((level) => (
-                <option key={level} value={level}>Nivel {level}</option>
+                <option key={level} value={level}>
+                  Nivel {level}
+                </option>
               ))}
             </select>
             {targetLevel > 1 ? (
               <p className="text-sm text-muted-foreground">
-                Primero se guardará tu ficha de nivel 1. Después, en la pestaña Subir nivel,
-                podrás avanzar de uno en uno hasta el nivel {targetLevel}, revisando las
-                elecciones y los rasgos de cada nivel. No se saltará ninguna decisión.
+                Primero se guardará tu ficha de nivel 1. Después, en la pestaña Subir nivel, podrás
+                avanzar de uno en uno hasta el nivel {targetLevel}, revisando las elecciones y los
+                rasgos de cada nivel. No se saltará ninguna decisión.
               </p>
             ) : null}
           </div>
@@ -194,7 +236,9 @@ function CreateEditor({ id }: { id: string }) {
           {step < STEPS.length - 1 ? (
             <Button onClick={nextStep}>Confirmar y siguiente</Button>
           ) : (
-            <Button onClick={finish} disabled={status.missing.length > 0}>Guardar y ver ficha</Button>
+            <Button onClick={finish} disabled={status.missing.length > 0}>
+              Guardar y ver ficha
+            </Button>
           )}
         </div>
         <nav className="flex gap-1.5 overflow-x-auto pb-1" aria-label="Apartados de creación">
@@ -213,7 +257,14 @@ function CreateEditor({ id }: { id: string }) {
         </nav>
       </div>
       <div className="pb-2 text-right">
-        <Button variant="ghost" size="sm" onClick={() => { store.remove(id); void navigate({ to: "/" }); }}>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => {
+            store.remove(id);
+            void navigate({ to: "/" });
+          }}
+        >
           Descartar personaje
         </Button>
       </div>

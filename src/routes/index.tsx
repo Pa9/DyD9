@@ -91,12 +91,7 @@ function CharactersPage() {
           <Button variant="outline" size="sm" onClick={() => fileRef.current?.click()}>
             <Upload className="size-4" /> Importar
           </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={exportAll}
-            disabled={!characters.length}
-          >
+          <Button variant="outline" size="sm" onClick={exportAll} disabled={!characters.length}>
             <Download className="size-4" /> Exportar
           </Button>
           <Button size="sm" asChild>
@@ -143,15 +138,21 @@ function CharactersPage() {
 
                 <dl className="grid grid-cols-3 gap-2 text-center">
                   <div className="stat-block px-2 py-1.5">
-                    <dt className="text-[10px] uppercase tracking-wide text-muted-foreground">Nivel</dt>
+                    <dt className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                      Nivel
+                    </dt>
                     <dd className="font-display text-base">{c.level}</dd>
                   </div>
                   <div className="stat-block px-2 py-1.5">
-                    <dt className="text-[10px] uppercase tracking-wide text-muted-foreground">PG</dt>
+                    <dt className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                      PG
+                    </dt>
                     <dd className="font-display text-base">{maxHp(c)}</dd>
                   </div>
                   <div className="stat-block px-2 py-1.5">
-                    <dt className="text-[10px] uppercase tracking-wide text-muted-foreground">CA</dt>
+                    <dt className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                      CA
+                    </dt>
                     <dd className="font-display text-base">{ac.value}</dd>
                   </div>
                 </dl>
@@ -203,7 +204,11 @@ function CharactersPage() {
             type="button"
             onClick={() => {
               const created = store.add(createCharacter());
-              void navigate({ to: "/personaje/$id", params: { id: created.id }, search: { tab: "combate" } });
+              void navigate({
+                to: "/personaje/$id",
+                params: { id: created.id },
+                search: { tab: "combate" },
+              });
             }}
             className="flex min-h-40 flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border p-6 text-muted-foreground transition-colors hover:border-primary/60 hover:text-foreground"
           >
@@ -235,7 +240,6 @@ function CharactersPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
     </main>
   );
 }

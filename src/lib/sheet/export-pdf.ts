@@ -34,7 +34,13 @@ export function sheetToPdf(doc: SheetDoc): jsPDF {
     }
   };
 
-  const text = (value: string, size: number, style: "normal" | "bold" | "italic", width = CONTENT_W, x = M) => {
+  const text = (
+    value: string,
+    size: number,
+    style: "normal" | "bold" | "italic",
+    width = CONTENT_W,
+    x = M,
+  ) => {
     pdf.setFont("helvetica", style);
     pdf.setFontSize(size);
     const lines = pdf.splitTextToSize(ascii(value), width) as string[];
@@ -70,7 +76,13 @@ export function sheetToPdf(doc: SheetDoc): jsPDF {
 }
 
 interface Ctx {
-  text: (value: string, size: number, style: "normal" | "bold" | "italic", width?: number, x?: number) => void;
+  text: (
+    value: string,
+    size: number,
+    style: "normal" | "bold" | "italic",
+    width?: number,
+    x?: number,
+  ) => void;
   ensure: (needed: number) => void;
   getY: () => number;
   setY: (v: number) => void;
@@ -116,7 +128,9 @@ function renderBlock(pdf: jsPDF, block: SheetBlock, ctx: Ctx) {
       header();
       pdf.setFont("helvetica", "normal");
       for (const row of block.rows) {
-        const cells = row.map((cell, i) => pdf.splitTextToSize(ascii(cell || "-"), widths[i]! - 2) as string[]);
+        const cells = row.map(
+          (cell, i) => pdf.splitTextToSize(ascii(cell || "-"), widths[i]! - 2) as string[],
+        );
         const h = Math.max(...cells.map((c) => c.length)) * 3.4 + 1.5;
         if (ctx.getY() + h > PAGE_H - M) {
           pdf.addPage();

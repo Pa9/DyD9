@@ -62,7 +62,11 @@ type Tab = "combate" | "habilidades" | "conjuros" | "inventario" | "detalles" | 
 
 export const Route = createFileRoute("/personaje/$id")({
   validateSearch: (search: Record<string, unknown>): { tab: Tab } => ({
-    tab: ["combate", "habilidades", "conjuros", "inventario", "detalles", "nivel"].includes(String(search["tab"])) ? search["tab"] as Tab : "combate",
+    tab: ["combate", "habilidades", "conjuros", "inventario", "detalles", "nivel"].includes(
+      String(search["tab"]),
+    )
+      ? (search["tab"] as Tab)
+      : "combate",
   }),
   head: () => ({
     meta: [
@@ -135,7 +139,11 @@ function CharacterPage() {
               const copy = store.duplicate(character.id);
               if (copy) {
                 toast.success("Personaje duplicado");
-                void navigate({ to: "/personaje/$id", params: { id: copy.id }, search: { tab: "combate" } });
+                void navigate({
+                  to: "/personaje/$id",
+                  params: { id: copy.id },
+                  search: { tab: "combate" },
+                });
               }
             }}
           >
@@ -157,14 +165,16 @@ function CharacterPage() {
         aria-label="Secciones del personaje"
         className="mb-4 flex w-full gap-1 overflow-x-auto rounded-lg border border-border bg-card/60 p-1"
       >
-        {([
-          ["combate", "Combate"],
-          ["habilidades", "Habilidades"],
-          ["conjuros", "Conjuros"],
-          ["inventario", "Inventario"],
-          ["detalles", "Detalles"],
-          ["nivel", "Subir nivel"],
-        ] as [Tab, string][]).map(([value, label]) => (
+        {(
+          [
+            ["combate", "Combate"],
+            ["habilidades", "Habilidades"],
+            ["conjuros", "Conjuros"],
+            ["inventario", "Inventario"],
+            ["detalles", "Detalles"],
+            ["nivel", "Subir nivel"],
+          ] as [Tab, string][]
+        ).map(([value, label]) => (
           <button
             key={value}
             type="button"
@@ -198,15 +208,14 @@ function CharacterPage() {
           <SkillsSection character={character} update={update} />
         </div>
       )}
-      {tab === "conjuros" && (
-        <SpellsSection character={character} update={update} />
-      )}
-      {tab === "inventario" && (
-        <EquipmentSection character={character} update={update} />
-      )}
+      {tab === "conjuros" && <SpellsSection character={character} update={update} />}
+      {tab === "inventario" && <EquipmentSection character={character} update={update} />}
       {tab === "detalles" && (
         <div className="space-y-5">
-          <Section title="Ficha exportable" hint="Descarga en PDF, exportación a Excel e impresión.">
+          <Section
+            title="Ficha exportable"
+            hint="Descarga en PDF, exportación a Excel e impresión."
+          >
             <SheetActions character={character} />
           </Section>
           <IdentitySection character={character} update={update} />
@@ -217,17 +226,13 @@ function CharacterPage() {
           <NotesSection character={character} update={update} />
         </div>
       )}
-      {tab === "nivel" && (
-        <LevelUpPanel character={character} update={update} />
-      )}
+      {tab === "nivel" && <LevelUpPanel character={character} update={update} />}
 
       <AlertDialog open={confirmDelete} onOpenChange={setConfirmDelete}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>¿Eliminar «{character.name || "Sin nombre"}»?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Esta acción no se puede deshacer.
-            </AlertDialogDescription>
+            <AlertDialogDescription>Esta acción no se puede deshacer.</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
@@ -257,7 +262,10 @@ function StatSummary({ character }: { character: Character }) {
   const skills = skillLines(character).filter((s) => s.proficient || s.expert);
 
   return (
-    <Section title="Resumen" hint={`Bonificador de competencia +${proficiencyBonus(character.level)}`}>
+    <Section
+      title="Resumen"
+      hint={`Bonificador de competencia +${proficiencyBonus(character.level)}`}
+    >
       <div className="space-y-4">
         <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
           {ABILITIES.map((a) => (
@@ -362,13 +370,18 @@ function LevelUpPanel({
       levelLog: [...c.levelLog, { level: next, date: new Date().toISOString() }],
     }));
     setRoll("");
-    toast.success(next === targetLevel ? `¡Nivel objetivo ${targetLevel} alcanzado!` : `¡Nivel ${next} alcanzado!`);
+    toast.success(
+      next === targetLevel
+        ? `¡Nivel objetivo ${targetLevel} alcanzado!`
+        : `¡Nivel ${next} alcanzado!`,
+    );
   };
 
   const levelDown = () => {
     if (character.level <= 1) return;
     const prev = character.level - 1;
-    if (!window.confirm(`¿Bajar a nivel ${prev}? Se quitará lo ganado en niveles superiores.`)) return;
+    if (!window.confirm(`¿Bajar a nivel ${prev}? Se quitará lo ganado en niveles superiores.`))
+      return;
     update((c) => pruneToLevel(c, prev));
     toast.success(`Nivel revertido a ${prev}`);
   };
@@ -393,7 +406,8 @@ function LevelUpPanel({
         <div className="space-y-4">
           {targetLevel > character.level ? (
             <p className="text-sm text-primary" role="status">
-              Creación guiada: nivel {character.level} de {targetLevel}. Completa las decisiones de cada nivel antes de avanzar.
+              Creación guiada: nivel {character.level} de {targetLevel}. Completa las decisiones de
+              cada nivel antes de avanzar.
             </p>
           ) : null}
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
@@ -427,7 +441,10 @@ function LevelUpPanel({
                   }}
                 />
               </div>
-              <Button onClick={levelUp} disabled={!character.classId || missingBeforeLevelUp.length > 0}>
+              <Button
+                onClick={levelUp}
+                disabled={!character.classId || missingBeforeLevelUp.length > 0}
+              >
                 <ChevronsUp className="size-4" /> Subir a nivel {next}
               </Button>
               <Button variant="outline" onClick={levelDown} disabled={character.level <= 1}>
@@ -483,7 +500,8 @@ function LevelUpPanel({
             {pending.map(({ feature, choice }) => (
               <div key={choice.id} className="stat-block p-3">
                 <p className="font-display text-sm">
-                  {feature.name} <span className="text-muted-foreground">· nivel {feature.level}</span>
+                  {feature.name}{" "}
+                  <span className="text-muted-foreground">· nivel {feature.level}</span>
                 </p>
                 <ChoiceGroup character={character} update={update} choice={choice} />
               </div>
@@ -507,7 +525,10 @@ function LevelUpPanel({
           {[...character.levelLog]
             .sort((a, b) => b.level - a.level)
             .map((l) => (
-              <li key={`${l.level}-${l.date}`} className="flex items-center justify-between text-sm">
+              <li
+                key={`${l.level}-${l.date}`}
+                className="flex items-center justify-between text-sm"
+              >
                 <span className="font-display">Nivel {l.level}</span>
                 <span className="text-xs text-muted-foreground">
                   {new Date(l.date).toLocaleDateString("es-ES", {

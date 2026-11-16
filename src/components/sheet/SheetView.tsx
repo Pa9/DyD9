@@ -40,7 +40,10 @@ function BlockView({ block }: { block: SheetBlock }) {
       {block.kind === "pairs" ? (
         <dl className="grid grid-cols-1 gap-x-6 gap-y-1 sm:grid-cols-2">
           {block.items.map((i) => (
-            <div key={i.label} className="flex justify-between gap-3 border-b border-dashed border-border/60 py-1">
+            <div
+              key={i.label}
+              className="flex justify-between gap-3 border-b border-dashed border-border/60 py-1"
+            >
               <dt className="text-xs uppercase tracking-wide text-muted-foreground">{i.label}</dt>
               <dd className="text-right text-sm">{i.value}</dd>
             </div>
@@ -85,7 +88,9 @@ function BlockView({ block }: { block: SheetBlock }) {
               <p className="font-display text-sm">{i.name}</p>
               {i.meta ? <p className="text-[11px] italic text-muted-foreground">{i.meta}</p> : null}
               {i.desc ? (
-                <p className="mt-1 whitespace-pre-line text-xs leading-relaxed text-muted-foreground">{i.desc}</p>
+                <p className="mt-1 whitespace-pre-line text-xs leading-relaxed text-muted-foreground">
+                  {i.desc}
+                </p>
               ) : null}
             </li>
           ))}
@@ -93,7 +98,9 @@ function BlockView({ block }: { block: SheetBlock }) {
       ) : null}
 
       {block.kind === "text" ? (
-        <p className="whitespace-pre-line text-sm leading-relaxed text-muted-foreground">{block.text}</p>
+        <p className="whitespace-pre-line text-sm leading-relaxed text-muted-foreground">
+          {block.text}
+        </p>
       ) : null}
     </section>
   );
