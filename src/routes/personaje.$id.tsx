@@ -49,10 +49,7 @@ import {
   hitDiceLabel,
   maxHp,
   pendingChoices,
-  asiLevelsAvailable,
-  cantripsAllowed,
-  spellsAllowed,
-  casterType,
+  levelUpRequirements,
   saveBonuses,
   skillLines,
   speed,
@@ -345,21 +342,7 @@ function LevelUpPanel({
   const pending = pendingChoices(character);
   const atMax = character.level >= 20;
   const targetLevel = Math.max(1, Math.min(20, character.targetLevel ?? character.level));
-  const missingBeforeLevelUp: string[] = [];
-  if (!character.name.trim()) missingBeforeLevelUp.push("nombre");
-  if (!character.speciesId) missingBeforeLevelUp.push("especie");
-  if (!character.backgroundId) missingBeforeLevelUp.push("trasfondo");
-  if (pending.length) missingBeforeLevelUp.push("elecciones de rasgos");
-  if (asiLevelsAvailable(character).some((level) => !character.asi.some((a) => a.level === level))) {
-    missingBeforeLevelUp.push("mejoras de característica o dotes");
-  }
-  if (character.level >= 3 && character.classId && !character.subclassId) {
-    missingBeforeLevelUp.push("subclase");
-  }
-  if (casterType(character)) {
-    if (character.cantrips.length < cantripsAllowed(character)) missingBeforeLevelUp.push("trucos");
-    if (character.spells.length < spellsAllowed(character)) missingBeforeLevelUp.push("conjuros");
-  }
+  const missingBeforeLevelUp = levelUpRequirements(character);
 
   const levelUp = () => {
     if (!character.classId) {
