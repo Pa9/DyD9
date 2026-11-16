@@ -79,9 +79,16 @@ export function buildSheetDoc(m: SheetModel): SheetDoc {
     title: "Combate",
     items: [
       { label: "PG (puntos de golpe) máx.", value: String(m.combat.maxHp) },
-      { label: "PG actuales", value: m.combat.currentHp === null ? "—" : String(m.combat.currentHp) },
+      {
+        label: "PG actuales",
+        value: m.combat.currentHp === null ? "—" : String(m.combat.currentHp),
+      },
       { label: "PG temporales", value: m.combat.tempHp === null ? "—" : String(m.combat.tempHp) },
-      { label: "CA (clase de armadura)", value: String(m.combat.ac), ...(m.combat.acNote ? { hint: m.combat.acNote } : {}) },
+      {
+        label: "CA (clase de armadura)",
+        value: String(m.combat.ac),
+        ...(m.combat.acNote ? { hint: m.combat.acNote } : {}),
+      },
       { label: "Iniciativa", value: fmtMod(m.combat.initiative) },
       { label: "Velocidad", value: `${m.combat.speed} pies` },
       { label: "Dados de golpe", value: m.combat.hitDice },
@@ -148,7 +155,11 @@ export function buildSheetDoc(m: SheetModel): SheetDoc {
       kind: "list",
       id: "rasgos",
       title: "Rasgos de clase y subclase",
-      items: classFeatures.map((f) => ({ name: f.name, meta: `Nivel ${f.level} · ${f.source}`, desc: f.desc })),
+      items: classFeatures.map((f) => ({
+        name: f.name,
+        meta: `Nivel ${f.level} · ${f.source}`,
+        desc: f.desc,
+      })),
     });
   }
 
@@ -177,7 +188,10 @@ export function buildSheetDoc(m: SheetModel): SheetDoc {
       id: "magia",
       title: "Lanzamiento de conjuros",
       items: [
-        { label: "Característica", value: ABILITIES.find((a) => a.key === sc.ability)?.name ?? "—" },
+        {
+          label: "Característica",
+          value: ABILITIES.find((a) => a.key === sc.ability)?.name ?? "—",
+        },
         { label: "CD de salvación", value: String(sc.dc) },
         { label: "Ataque de conjuro", value: fmtMod(sc.attack) },
         { label: "Nivel máx.", value: String(sc.maxSpellLevel) },
@@ -210,7 +224,14 @@ export function buildSheetDoc(m: SheetModel): SheetDoc {
         title: `Conjuros de nivel ${group.level}`,
         items: group.spells.map((s) => ({
           name: `${s.name}${group.prepared.includes(s.id) ? " (preparado)" : ""}`,
-          meta: [s.school, s.castingTime, s.range, s.duration, s.concentration ? "Concentración" : "", s.ritual ? "Ritual" : ""]
+          meta: [
+            s.school,
+            s.castingTime,
+            s.range,
+            s.duration,
+            s.concentration ? "Concentración" : "",
+            s.ritual ? "Ritual" : "",
+          ]
             .filter(Boolean)
             .join(" · "),
           desc: s.upcast ? `${s.desc}\nA niveles superiores: ${s.upcast}` : s.desc,
@@ -268,7 +289,8 @@ export function buildSheetDoc(m: SheetModel): SheetDoc {
     ]),
   });
 
-  if (m.appearance) blocks.push({ kind: "text", id: "apariencia", title: "Apariencia", text: m.appearance });
+  if (m.appearance)
+    blocks.push({ kind: "text", id: "apariencia", title: "Apariencia", text: m.appearance });
   if (m.notes) blocks.push({ kind: "text", id: "notas", title: "Notas e historia", text: m.notes });
   if (m.manualNotes)
     blocks.push({ kind: "text", id: "casa", title: "Reglas de la casa", text: m.manualNotes });

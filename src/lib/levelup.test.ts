@@ -34,7 +34,9 @@ describe("subida de nivel", () => {
 
   it("el nivel 4 exige mejora de característica o dote", () => {
     expect(levelUpDelta({ ...fighter(), level: 3 }).asi).toBe(true);
-    expect(missingForLevel({ ...fighter(), level: 4 })).toContain("Mejora de característica o dote");
+    expect(missingForLevel({ ...fighter(), level: 4 })).toContain(
+      "Mejora de característica o dote",
+    );
   });
 
   it("solo puede subir de uno en uno", () => {

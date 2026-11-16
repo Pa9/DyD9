@@ -112,18 +112,26 @@ export function casterType(c: Character) {
   const klass = c.classId ? CLASS_MAP[c.classId] : null;
   if (!klass) return null;
   const sub = klass.subclasses.find((s) => s.id === c.subclassId);
-  if (sub?.caster) return { type: sub.caster, ability: sub.spellAbility ?? klass.spellAbility ?? "int" };
+  if (sub?.caster)
+    return { type: sub.caster, ability: sub.spellAbility ?? klass.spellAbility ?? "int" };
   if (klass.caster) return { type: klass.caster, ability: klass.spellAbility ?? "int" };
   return null;
 }
 
-export function spellSlots(c: Character): { slots: number[]; pact?: { slots: number; level: number } } {
+export function spellSlots(c: Character): {
+  slots: number[];
+  pact?: { slots: number; level: number };
+} {
   const ct = casterType(c);
   if (!ct) return { slots: [] };
   const lvl = Math.min(20, Math.max(1, c.level));
   if (ct.type === "pact") return { slots: [], pact: PACT_MAGIC[lvl]! };
   const table =
-    ct.type === "full" ? FULL_CASTER_SLOTS : ct.type === "half" ? HALF_CASTER_SLOTS : THIRD_CASTER_SLOTS;
+    ct.type === "full"
+      ? FULL_CASTER_SLOTS
+      : ct.type === "half"
+        ? HALF_CASTER_SLOTS
+        : THIRD_CASTER_SLOTS;
   return { slots: table[lvl] ?? [] };
 }
 
@@ -183,20 +191,23 @@ export function maxHp(c: Character): number {
 }
 
 export function armorClass(c: Character): { value: number; note: string } {
-  if (typeof c.manualAc === "number" && c.manualAc > 0) return { value: c.manualAc, note: "Manual" };
+  if (typeof c.manualAc === "number" && c.manualAc > 0)
+    return { value: c.manualAc, note: "Manual" };
   const ab = finalAbilities(c);
   const dex = abilityMod(ab.dex);
   const names = c.equipment.map((e) => e.name.toLowerCase());
   const hasShield = names.some((n) => n.includes("escudo"));
   const shield = hasShield ? 2 : 0;
-  if (names.some((n) => n.includes("cota de malla"))) return { value: 16 + shield, note: "Cota de malla" };
+  if (names.some((n) => n.includes("cota de malla")))
+    return { value: 16 + shield, note: "Cota de malla" };
   if (names.some((n) => n.includes("cota de escamas")))
     return { value: 14 + Math.min(2, dex) + shield, note: "Cota de escamas" };
   if (names.some((n) => n.includes("cuero tachonado")))
     return { value: 12 + dex + shield, note: "Cuero tachonado" };
   if (names.some((n) => n.includes("armadura de cuero")))
     return { value: 11 + dex + shield, note: "Armadura de cuero" };
-  if (c.classId === "monk") return { value: 10 + dex + abilityMod(ab.wis), note: "Defensa sin armadura" };
+  if (c.classId === "monk")
+    return { value: 10 + dex + abilityMod(ab.wis), note: "Defensa sin armadura" };
   if (c.classId === "barbarian")
     return { value: 10 + dex + abilityMod(ab.con), note: "Defensa sin armadura" };
   return { value: 10 + dex + shield, note: "Sin armadura" };
@@ -249,7 +260,9 @@ export function skillLines(c: Character): SkillLine[] {
   });
 }
 
-export function saveBonuses(c: Character): Record<AbilityKey, { bonus: number; proficient: boolean }> {
+export function saveBonuses(
+  c: Character,
+): Record<AbilityKey, { bonus: number; proficient: boolean }> {
   const ab = finalAbilities(c);
   const pb = proficiencyBonus(c.level);
   const klass = c.classId ? CLASS_MAP[c.classId] : null;
@@ -325,25 +338,55 @@ export function characterSubtitle(c: Character): string {
   return parts.join(" · ");
 }
 
-/** Validación de completitud para la ficha */
-export function completeness(c: Character): { done: number; total: number; missing: string[] } {
+/** Decisiones necesarias antes de avanzar al siguiente nivel. */
+export function levelUpRequirements(c: Character): string[] {
   const missing: string[] = [];
   if (!c.name.trim()) missing.push("Nombre");
   if (!c.speciesId) missing.push("Especie");
   if (!c.classId) missing.push("Clase");
   if (!c.backgroundId) missing.push("Trasfondo");
-  const bgPoints = Object.values(c.backgroundAbilities).reduce((a, b) => a + (b ?? 0), 0);
-  if (bgPoints !== 3) missing.push("Mejoras de trasfondo");
+  const bg = c.backgroundId ? BACKGROUND_MAP[c.backgroundId] : null;
+  const entries = Object.entries(c.backgroundAbilities);
+  const values = entries.map(([, value]) => value ?? 0);
+  const total = values.reduce((sum, value) => sum + value, 0);
+  const validSpread =
+    (values.length === 2 && values.includes(2) && values.includes(1)) ||
+    (values.length === 3 && values.every((value) => value === 1));
+  if (
+    !bg ||
+    total !== 3 ||
+    !validSpread ||
+    entries.some(([key]) => !bg.abilityOptions.includes(key as AbilityKey))
+  ) {
+    missing.push("Mejoras de trasfondo");
+  }
   if (c.skillProficiencies.length < classSkillCount(c)) missing.push("Habilidades de clase");
-  if (c.level >= 3 && c.classId && !c.subclassId) missing.push("Subclase");
+  const klass = c.classId ? CLASS_MAP[c.classId] : null;
+  if (klass && c.level >= klass.subclassLevel && !c.subclassId) missing.push("Subclase");
   const ct = casterType(c);
   if (ct) {
     if (c.cantrips.length < cantripsAllowed(c)) missing.push("Trucos");
     if (c.spells.length < spellsAllowed(c)) missing.push("Conjuros");
   }
-  if (asiLevelsAvailable(c).some((l) => !c.asi.find((a) => a.level === l)))
+  if (
+    asiLevelsAvailable(c).some(
+      (level) =>
+        !c.asi.some(
+          (a) =>
+            a.level === level &&
+            (a.type === "feat" ? !!a.featId : (a.abilities?.length ?? 0) === 2),
+        ),
+    )
+  ) {
     missing.push("Mejoras de característica");
+  }
   if (pendingChoices(c).length) missing.push("Elecciones de rasgos");
-  const total = 9;
+  return missing;
+}
+
+/** Validación de completitud para la ficha */
+export function completeness(c: Character): { done: number; total: number; missing: string[] } {
+  const missing = levelUpRequirements(c);
+  const total = 11;
   return { done: Math.max(0, total - missing.length), total, missing };
 }

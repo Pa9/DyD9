@@ -12,7 +12,8 @@ function blockRows(block: SheetBlock): Row[] {
   switch (block.kind) {
     case "pairs":
     case "stats":
-      for (const i of block.items) rows.push([i.label, i.value, ...(("hint" in i && i.hint) ? [i.hint] : [])]);
+      for (const i of block.items)
+        rows.push([i.label, i.value, ...("hint" in i && i.hint ? [i.hint] : [])]);
       break;
     case "table":
       rows.push(block.columns);

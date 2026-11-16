@@ -1,0 +1,52 @@
+name: Validar web
+
+on:
+  pull_request:
+  push:
+    branches:
+      - feat/fase1-progresion-guiada
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v4
+      - name: Preparar Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Instalar dependencias
+        run: bun install --frozen-lockfile
+      - name: Corregir formato y reglas automáticas
+        if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
+        run: |
+          bunx prettier --write .
+          bunx eslint . --fix || true
+      - name: Guardar correcciones en la rama
+        if: github.event_name == 'push'
+        run: |
+          if ! git diff --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add -u
+            git commit -m "style: aplicar formato automático"
+            git push
+          fi
+      - name: Verificar formato guardado en el repositorio
+        if: github.event_name == 'pull_request'
+        run: |
+          if ! git diff --quiet; then
+            echo "::error::El formato corregido aún no está guardado en la rama."
+            git diff --stat
+            exit 1
+          fi
+      - name: Compilar aplicación
+        run: bun run build
+      - name: Ejecutar pruebas de reglas
+        run: bun test
+      - name: Comprobar lint
+        run: bun run lint

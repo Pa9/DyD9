@@ -115,8 +115,16 @@ export const SPECIES: Species[] = [
         name: "Agilidad Mediana",
         desc: "Puedes moverte a través del espacio de criaturas de tamaño mayor que el tuyo.",
       },
-      { level: 1, name: "Suerte", desc: "Puedes volver a tirar un 1 en pruebas, ataques o salvaciones." },
-      { level: 1, name: "Sigiloso por Naturaleza", desc: "Puedes esconderte tras una criatura mayor." },
+      {
+        level: 1,
+        name: "Suerte",
+        desc: "Puedes volver a tirar un 1 en pruebas, ataques o salvaciones.",
+      },
+      {
+        level: 1,
+        name: "Sigiloso por Naturaleza",
+        desc: "Puedes esconderte tras una criatura mayor.",
+      },
     ],
   },
   {
@@ -153,9 +161,17 @@ export const SPECIES: Species[] = [
         name: "Aliento de Dragón",
         desc: "Reemplaza un ataque para exhalar energía en línea o cono (1d10, aumenta a niveles 5, 11 y 17).",
       },
-      { level: 1, name: "Resistencia al Daño", desc: "Resistencia al tipo de daño de tu ascendencia." },
+      {
+        level: 1,
+        name: "Resistencia al Daño",
+        desc: "Resistencia al tipo de daño de tu ascendencia.",
+      },
       { level: 5, name: "Visión en la Oscuridad", desc: "Ves en la oscuridad hasta 60 pies." },
-      { level: 10, name: "Vuelo Dracónico", desc: "Como acción adicional, ganas velocidad de vuelo igual a tu velocidad por 10 minutos." },
+      {
+        level: 10,
+        name: "Vuelo Dracónico",
+        desc: "Como acción adicional, ganas velocidad de vuelo igual a tu velocidad por 10 minutos.",
+      },
     ],
   },
   {
@@ -166,7 +182,11 @@ export const SPECIES: Species[] = [
     speed: 30,
     traits: [
       { level: 1, name: "Visión en la Oscuridad", desc: "Ves en la oscuridad hasta 60 pies." },
-      { level: 1, name: "Herencia Infernal", desc: "Conoces el truco Taumaturgia y aprendes conjuros según tu legado." },
+      {
+        level: 1,
+        name: "Herencia Infernal",
+        desc: "Conoces el truco Taumaturgia y aprendes conjuros según tu legado.",
+      },
       {
         level: 1,
         name: "Legado Planar",
@@ -176,13 +196,29 @@ export const SPECIES: Species[] = [
           label: "Legado planar",
           count: 1,
           options: [
-            { id: "abyssal", name: "Abisal", desc: "Resistencia a veneno; Bendición, Rayo de Enfermedad, Aura de Vitalidad." },
-            { id: "chthonic", name: "Ctónico", desc: "Resistencia a necrótico; Perdición, Falsa Vida, Toque Vampírico." },
-            { id: "infernal", name: "Infernal", desc: "Resistencia a fuego; Reprensión Infernal, Manos Ardientes, Bola de Fuego." },
+            {
+              id: "abyssal",
+              name: "Abisal",
+              desc: "Resistencia a veneno; Bendición, Rayo de Enfermedad, Aura de Vitalidad.",
+            },
+            {
+              id: "chthonic",
+              name: "Ctónico",
+              desc: "Resistencia a necrótico; Perdición, Falsa Vida, Toque Vampírico.",
+            },
+            {
+              id: "infernal",
+              name: "Infernal",
+              desc: "Resistencia a fuego; Reprensión Infernal, Manos Ardientes, Bola de Fuego.",
+            },
           ],
         },
       },
-      { level: 5, name: "Legado Reforzado", desc: "Puedes lanzar el conjuro de nivel 1 de tu legado sin gastar espacio una vez por descanso largo." },
+      {
+        level: 5,
+        name: "Legado Reforzado",
+        desc: "Puedes lanzar el conjuro de nivel 1 de tu legado sin gastar espacio una vez por descanso largo.",
+      },
     ],
   },
   {
@@ -193,7 +229,11 @@ export const SPECIES: Species[] = [
     speed: 30,
     traits: [
       { level: 1, name: "Visión en la Oscuridad", desc: "Ves en la oscuridad hasta 60 pies." },
-      { level: 1, name: "Astucia Gnoma", desc: "Ventaja en salvaciones de Inteligencia, Sabiduría y Carisma contra magia." },
+      {
+        level: 1,
+        name: "Astucia Gnoma",
+        desc: "Ventaja en salvaciones de Inteligencia, Sabiduría y Carisma contra magia.",
+      },
       {
         level: 1,
         name: "Linaje Gnomo",
@@ -203,8 +243,16 @@ export const SPECIES: Species[] = [
           label: "Linaje gnomo",
           count: 1,
           options: [
-            { id: "forest", name: "Gnomo del Bosque", desc: "Truco Ilusión Menor y hablas con bestias pequeñas." },
-            { id: "rock", name: "Gnomo de las Rocas", desc: "Competencia con herramientas de manitas y creas artilugios." },
+            {
+              id: "forest",
+              name: "Gnomo del Bosque",
+              desc: "Truco Ilusión Menor y hablas con bestias pequeñas.",
+            },
+            {
+              id: "rock",
+              name: "Gnomo de las Rocas",
+              desc: "Competencia con herramientas de manitas y creas artilugios.",
+            },
           ],
         },
       },
@@ -218,8 +266,16 @@ export const SPECIES: Species[] = [
     speed: 30,
     traits: [
       { level: 1, name: "Visión en la Oscuridad", desc: "Ves en la oscuridad hasta 120 pies." },
-      { level: 1, name: "Resistencia Incansable", desc: "Al caer a 0 pg puedes quedarte en 1 pg (una vez por descanso largo)." },
-      { level: 1, name: "Embate Adrenalínico", desc: "Al usar Esprintar ganas puntos de golpe temporales." },
+      {
+        level: 1,
+        name: "Resistencia Incansable",
+        desc: "Al caer a 0 pg puedes quedarte en 1 pg (una vez por descanso largo).",
+      },
+      {
+        level: 1,
+        name: "Embate Adrenalínico",
+        desc: "Al usar Esprintar ganas puntos de golpe temporales.",
+      },
     ],
   },
   {
@@ -229,8 +285,16 @@ export const SPECIES: Species[] = [
     size: "Mediano",
     speed: 35,
     traits: [
-      { level: 1, name: "Constitución Gigantesca", desc: "Tienes ventaja en salvaciones contra el estado apresado." },
-      { level: 1, name: "Poderoso", desc: "Cuentas como una talla mayor al determinar tu capacidad de carga." },
+      {
+        level: 1,
+        name: "Constitución Gigantesca",
+        desc: "Tienes ventaja en salvaciones contra el estado apresado.",
+      },
+      {
+        level: 1,
+        name: "Poderoso",
+        desc: "Cuentas como una talla mayor al determinar tu capacidad de carga.",
+      },
       {
         level: 1,
         name: "Ascendencia Gigante",
@@ -240,16 +304,40 @@ export const SPECIES: Species[] = [
           label: "Ascendencia de gigante",
           count: 1,
           options: [
-            { id: "cloud", name: "Gigante de las Nubes", desc: "Teletransporte corto como acción adicional." },
+            {
+              id: "cloud",
+              name: "Gigante de las Nubes",
+              desc: "Teletransporte corto como acción adicional.",
+            },
             { id: "fire", name: "Gigante de Fuego", desc: "Daño de fuego adicional al golpear." },
-            { id: "frost", name: "Gigante de Escarcha", desc: "Daño de frío y reduces la velocidad del objetivo." },
-            { id: "hill", name: "Gigante de las Colinas", desc: "Derribas al objetivo al golpear." },
-            { id: "stone", name: "Gigante de Piedra", desc: "Reacción para reducir daño recibido." },
-            { id: "storm", name: "Gigante de las Tormentas", desc: "Daño de trueno en área al golpear." },
+            {
+              id: "frost",
+              name: "Gigante de Escarcha",
+              desc: "Daño de frío y reduces la velocidad del objetivo.",
+            },
+            {
+              id: "hill",
+              name: "Gigante de las Colinas",
+              desc: "Derribas al objetivo al golpear.",
+            },
+            {
+              id: "stone",
+              name: "Gigante de Piedra",
+              desc: "Reacción para reducir daño recibido.",
+            },
+            {
+              id: "storm",
+              name: "Gigante de las Tormentas",
+              desc: "Daño de trueno en área al golpear.",
+            },
           ],
         },
       },
-      { level: 5, name: "Zancada Gigante", desc: "Como acción adicional, aumentas tu tamaño a Grande durante 10 minutos (una vez por descanso largo)." },
+      {
+        level: 5,
+        name: "Zancada Gigante",
+        desc: "Como acción adicional, aumentas tu tamaño a Grande durante 10 minutos (una vez por descanso largo).",
+      },
     ],
   },
   {
@@ -260,10 +348,22 @@ export const SPECIES: Species[] = [
     speed: 30,
     traits: [
       { level: 1, name: "Visión en la Oscuridad", desc: "Ves en la oscuridad hasta 60 pies." },
-      { level: 1, name: "Manos Curativas", desc: "Como acción, curas puntos de golpe iguales a tiradas de d4 (una vez por descanso largo)." },
+      {
+        level: 1,
+        name: "Manos Curativas",
+        desc: "Como acción, curas puntos de golpe iguales a tiradas de d4 (una vez por descanso largo).",
+      },
       { level: 1, name: "Portador de Luz", desc: "Conoces el truco Luz." },
-      { level: 1, name: "Resistencia Celestial", desc: "Resistencia al daño necrótico y radiante." },
-      { level: 3, name: "Revelación Celestial", desc: "Como acción adicional te transformas (alas, alma radiante o mortaja necrótica) durante 1 minuto." },
+      {
+        level: 1,
+        name: "Resistencia Celestial",
+        desc: "Resistencia al daño necrótico y radiante.",
+      },
+      {
+        level: 3,
+        name: "Revelación Celestial",
+        desc: "Como acción adicional te transformas (alas, alma radiante o mortaja necrótica) durante 1 minuto.",
+      },
     ],
   },
 ];

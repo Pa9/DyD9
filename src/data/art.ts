@@ -6,7 +6,10 @@ const files = import.meta.glob("../assets/art/*.jpg", { eager: true, import: "de
 
 const ART: Record<string, string> = {};
 for (const [path, url] of Object.entries(files)) {
-  const name = path.split("/").pop()!.replace(/\.jpg$/, "");
+  const name = path
+    .split("/")
+    .pop()!
+    .replace(/\.jpg$/, "");
   ART[name] = url;
 }
 

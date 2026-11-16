@@ -43,7 +43,8 @@ export function levelUpDelta(c: Character): LevelDelta {
     const to = sAfter.slots[i] ?? 0;
     if (from !== to) slots.push({ level: i + 1, from, to });
   }
-  const pactStr = (p?: { slots: number; level: number }) => (p ? `${p.slots} × nivel ${p.level}` : "—");
+  const pactStr = (p?: { slots: number; level: number }) =>
+    p ? `${p.slots} × nivel ${p.level}` : "—";
   const delta: LevelDelta = {
     level: next,
     features: featuresGainedBetween(c, c.level, next),
@@ -110,7 +111,9 @@ export function pruneToLevel(c: Character, level: number): Character {
   const target = Math.max(1, Math.min(c.level, level));
   const klass = c.classId ? CLASS_MAP[c.classId] : null;
   const lv = choiceLevels(c);
-  const hpRolls = Object.fromEntries(Object.entries(c.hpRolls).filter(([k]) => Number(k) <= target));
+  const hpRolls = Object.fromEntries(
+    Object.entries(c.hpRolls).filter(([k]) => Number(k) <= target),
+  );
   let next: Character = {
     ...c,
     level: target,
@@ -120,7 +123,7 @@ export function pruneToLevel(c: Character, level: number): Character {
     choices: Object.fromEntries(Object.entries(c.choices).filter(([k]) => (lv[k] ?? 1) <= target)),
   };
   if (klass && target < klass.subclassLevel) next = { ...next, subclassId: null };
-  const cap = <T,>(arr: T[], n: number) => (arr.length > n ? arr.slice(0, n) : arr);
+  const cap = <T>(arr: T[], n: number) => (arr.length > n ? arr.slice(0, n) : arr);
   next = {
     ...next,
     skillProficiencies: cap(next.skillProficiencies, classSkillCount(next)),

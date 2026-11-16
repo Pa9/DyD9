@@ -59,13 +59,11 @@
   --font-display: "Cinzel", "Georgia", serif;
   --font-sans: "Alegreya Sans", ui-sans-serif, system-ui, sans-serif;
   --font-body: "Alegreya", Georgia, serif;
-  --shadow-rune: 0 1px 0 0 oklch(0.98 0.02 85 / 0.06) inset, 0 18px 40px -24px oklch(0.05 0.02 260 / 0.9);
+  --shadow-rune:
+    0 1px 0 0 oklch(0.98 0.02 85 / 0.06) inset, 0 18px 40px -24px oklch(0.05 0.02 260 / 0.9);
   --shadow-gold: 0 0 0 1px var(--gold), 0 10px 30px -16px oklch(0.72 0.14 82 / 0.65);
-  --background-image-vellum: radial-gradient(
-      circle at 15% 10%,
-      oklch(0.28 0.04 55 / 0.35),
-      transparent 55%
-    ),
+  --background-image-vellum:
+    radial-gradient(circle at 15% 10%, oklch(0.28 0.04 55 / 0.35), transparent 55%),
     radial-gradient(circle at 85% 0%, oklch(0.32 0.05 265 / 0.4), transparent 50%);
 }
 
