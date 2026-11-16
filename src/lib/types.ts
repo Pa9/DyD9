@@ -125,6 +125,8 @@ export interface Character {
   subclassId: string | null;
   backgroundId: string | null;
   level: number;
+  /** Nivel final elegido durante la creación guiada. */
+  targetLevel?: number;
   alignment?: string;
   abilities: Record<AbilityKey, number>;
   /** Mejoras de puntuación del trasfondo (5.5e: +2/+1 o +1/+1/+1) */
