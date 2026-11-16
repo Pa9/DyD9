@@ -159,9 +159,16 @@ function CreateEditor({ id }: { id: string }) {
 
       <div className="sticky bottom-0 z-30 -mx-4 space-y-2 border-t border-border bg-background/95 px-4 py-3 shadow-lg backdrop-blur sm:mx-0 sm:rounded-lg sm:border sm:px-3">
         <div className="flex items-center justify-between gap-2">
-          <Button variant="outline" disabled={step === 0} onClick={() => goTo(step - 1)}>
-            Anterior
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button variant="outline" disabled={step === 0} onClick={() => goTo(step - 1)}>
+              Anterior
+            </Button>
+            {step > 0 && (
+              <Button variant="ghost" onClick={() => goTo(0)}>
+                Volver al nombre
+              </Button>
+            )}
+          </div>
           {step < STEPS.length - 1 ? (
             <Button onClick={nextStep}>Confirmar y siguiente</Button>
           ) : (
