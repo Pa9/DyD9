@@ -16,7 +16,7 @@ import {
 } from "@/components/character/parts";
 import { useCharacter } from "@/hooks/useCharacters";
 import { createCharacter, store } from "@/lib/storage";
-import { classSkillCount, completeness, pendingChoices, casterType, cantripsAllowed, spellsAllowed } from "@/lib/derive";
+import { classSkillCount, completeness, pendingChoices, casterType, cantripsAllowed, spellsAllowed, levelUpRequirements } from "@/lib/derive";
 import type { Character } from "@/lib/types";
 
 export const Route = createFileRoute("/crear")({
@@ -49,8 +49,8 @@ function stepError(c: Character, step: number): string | null {
     case 1: return c.speciesId ? null : "Selecciona una especie.";
     case 2: return c.classId ? null : "Selecciona una clase.";
     case 3: return c.backgroundId ? null : "Selecciona un trasfondo.";
-    case 4: return Object.values(c.backgroundAbilities).reduce((sum, value) => sum + (value ?? 0), 0) === 3
-      ? null : "Reparte las 3 mejoras de características del trasfondo.";
+    case 4: return levelUpRequirements(c).includes("Mejoras de trasfondo")
+      ? "Reparte correctamente las mejoras de características del trasfondo." : null;
     case 5: return c.skillProficiencies.length >= classSkillCount(c)
       ? null : "Selecciona las habilidades de clase necesarias.";
     case 6: return pendingChoices(c).length === 0
