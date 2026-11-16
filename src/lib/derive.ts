@@ -325,6 +325,11 @@ export function characterSubtitle(c: Character): string {
   return parts.join(" · ");
 }
 
+function klassSkillOptions(c: Character): string[] {
+  const klass = c.classId ? CLASS_MAP[c.classId] : null;
+  return klass?.skillOptions ?? [];
+}
+
 /** Decisiones necesarias antes de avanzar al siguiente nivel. */
 export function levelUpRequirements(c: Character): string[] {
   const missing: string[] = [];
@@ -341,7 +346,11 @@ export function levelUpRequirements(c: Character): string[] {
   if (!bg || total !== 3 || !validSpread || entries.some(([key]) => !bg.abilityOptions.includes(key as AbilityKey))) {
     missing.push("Mejoras de trasfondo");
   }
-  if (c.skillProficiencies.length < classSkillCount(c)) missing.push("Habilidades de clase");
+  const classSkills = klassSkillOptions(c);
+  if (c.skillProficiencies.length < classSkillCount(c)
+    || c.skillProficiencies.some((skill) => !classSkills.includes(skill))) {
+    missing.push("Habilidades de clase");
+  }
   const klass = c.classId ? CLASS_MAP[c.classId] : null;
   if (klass && c.level >= klass.subclassLevel && !c.subclassId) missing.push("Subclase");
   const ct = casterType(c);
