@@ -284,6 +284,11 @@ function StatSummary({ character }: { character: Character }) {
         </div>
 
         {sc ? (
+          {targetLevel > character.level ? (
+            <p className="text-sm text-primary" role="status">
+              Creación guiada: nivel {character.level} de {targetLevel}. Completa las decisiones de cada nivel antes de avanzar.
+            </p>
+          ) : null}
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             <MiniStat label="CD de conjuros" value={String(sc.dc)} />
             <MiniStat label="Ataque de conjuro" value={fmtMod(sc.attack)} />
@@ -344,6 +349,7 @@ function LevelUpPanel({
   const preview = character.classId ? featuresGainedBetween(character, character.level, next) : [];
   const pending = pendingChoices(character);
   const atMax = character.level >= 20;
+  const targetLevel = Math.max(1, Math.min(20, character.targetLevel ?? character.level));
   const missingBeforeLevelUp: string[] = [];
   if (!character.name.trim()) missingBeforeLevelUp.push("nombre");
   if (!character.speciesId) missingBeforeLevelUp.push("especie");
@@ -378,7 +384,7 @@ function LevelUpPanel({
       levelLog: [...c.levelLog, { level: next, date: new Date().toISOString() }],
     }));
     setRoll("");
-    toast.success(`¡Nivel ${next} alcanzado!`);
+    toast.success(next === targetLevel ? `¡Nivel objetivo ${targetLevel} alcanzado!` : `¡Nivel ${next} alcanzado!`);
   };
 
   const levelDown = () => {
