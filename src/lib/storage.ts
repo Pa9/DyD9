@@ -93,7 +93,8 @@ function isImportableCharacter(value: unknown): value is Character {
     typeof c.notes === "string" &&
     typeof c.appearance === "string" &&
     typeof c.createdAt === "string" &&
-    typeof c.updatedAt === "string"
+    typeof c.updatedAt === "string" &&
+    (c.targetLevel === undefined || (Number.isInteger(c.targetLevel) && (c.targetLevel as number) >= 1 && (c.targetLevel as number) <= 20))
   );
 }
 
@@ -107,7 +108,8 @@ function read(): Character[] {
   if (cache) return cache;
   try {
     const raw = window.localStorage.getItem(KEY);
-    cache = raw ? (JSON.parse(raw) as Character[]) : [];
+    const parsed: unknown = raw ? JSON.parse(raw) : [];
+    cache = Array.isArray(parsed) ? parsed.filter(isImportableCharacter) : [];
   } catch {
     cache = [];
   }
