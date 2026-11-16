@@ -94,7 +94,10 @@ function isImportableCharacter(value: unknown): value is Character {
     typeof c.appearance === "string" &&
     typeof c.createdAt === "string" &&
     typeof c.updatedAt === "string" &&
-    (c.targetLevel === undefined || (Number.isInteger(c.targetLevel) && (c.targetLevel as number) >= 1 && (c.targetLevel as number) <= 20))
+    (c.targetLevel === undefined ||
+      (Number.isInteger(c.targetLevel) &&
+        (c.targetLevel as number) >= 1 &&
+        (c.targetLevel as number) <= 20))
   );
 }
 
