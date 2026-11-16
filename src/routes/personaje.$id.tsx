@@ -56,6 +56,7 @@ import {
   spellcastingStats,
 } from "@/lib/derive";
 import { ABILITIES, XP_BY_LEVEL, proficiencyBonus } from "@/data/rules";
+import { CLASS_MAP } from "@/data/classes";
 import type { Character } from "@/lib/types";
 
 type Tab = "combate" | "habilidades" | "conjuros" | "inventario" | "detalles" | "nivel";
@@ -510,7 +511,9 @@ function LevelUpPanel({
         </Section>
       ) : null}
 
-      {character.level >= 3 && character.classId && !character.subclassId ? (
+      {character.classId &&
+      character.level >= (CLASS_MAP[character.classId]?.subclassLevel ?? 3) &&
+      !character.subclassId ? (
         <ClassSection character={character} update={update} subclassOnly />
       ) : null}
 
