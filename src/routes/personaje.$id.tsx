@@ -284,11 +284,6 @@ function StatSummary({ character }: { character: Character }) {
         </div>
 
         {sc ? (
-          {targetLevel > character.level ? (
-            <p className="text-sm text-primary" role="status">
-              Creación guiada: nivel {character.level} de {targetLevel}. Completa las decisiones de cada nivel antes de avanzar.
-            </p>
-          ) : null}
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             <MiniStat label="CD de conjuros" value={String(sc.dc)} />
             <MiniStat label="Ataque de conjuro" value={fmtMod(sc.attack)} />
@@ -413,6 +408,11 @@ function LevelUpPanel({
         }
       >
         <div className="space-y-4">
+          {targetLevel > character.level ? (
+            <p className="text-sm text-primary" role="status">
+              Creación guiada: nivel {character.level} de {targetLevel}. Completa las decisiones de cada nivel antes de avanzar.
+            </p>
+          ) : null}
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             <MiniStat label="Nivel actual" value={String(character.level)} />
             <MiniStat label="Competencia" value={fmtMod(proficiencyBonus(character.level))} />
