@@ -84,6 +84,7 @@ function CreateEditor({ id }: { id: string }) {
   const { character, update } = useCharacter(id);
   const [step, setStep] = useState(0);
   const [maxReached, setMaxReached] = useState(0);
+  const [targetLevel, setTargetLevel] = useState(1);
 
   if (!character) {
     return <main className="mx-auto max-w-4xl px-4 py-10">Cargando…</main>;
@@ -124,7 +125,7 @@ function CreateEditor({ id }: { id: string }) {
       return;
     }
     toast.success("Personaje creado y guardado");
-    void navigate({ to: "/personaje/$id", params: { id }, search: { tab: "combate" } });
+    void navigate({ to: "/personaje/$id", params: { id }, search: { tab: targetLevel > 1 ? "nivel" : "combate" } });
   }
 
   return (
@@ -132,7 +133,7 @@ function CreateEditor({ id }: { id: string }) {
       <header className="space-y-2">
         <h1 className="font-display text-2xl tracking-wide">Crear personaje paso a paso</h1>
         <p className="text-sm text-muted-foreground">
-          Nivel 1 · Paso {step + 1} de {STEPS.length}: {STEPS[step]}. Los cambios se guardan automáticamente.
+          Nivel inicial 1 · Paso {step + 1} de {STEPS.length}: {STEPS[step]}. Los cambios se guardan automáticamente.
         </p>
         <div className="h-2 overflow-hidden rounded-full bg-secondary" role="progressbar" aria-valuenow={step + 1} aria-valuemin={1} aria-valuemax={STEPS.length}>
           <div className="h-full bg-primary transition-all" style={{ width: `${((step + 1) / STEPS.length) * 100}%` }} />
@@ -154,6 +155,26 @@ function CreateEditor({ id }: { id: string }) {
             </ul>
           ) : null}
           <p className="text-sm">Completado: {status.done}/{status.total}</p>
+          <div className="space-y-2">
+            <label htmlFor="target-level" className="block text-sm font-medium">Nivel objetivo de creación</label>
+            <select
+              id="target-level"
+              value={targetLevel}
+              onChange={(event) => setTargetLevel(Number(event.target.value))}
+              className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+            >
+              {Array.from({ length: 20 }, (_, index) => index + 1).map((level) => (
+                <option key={level} value={level}>Nivel {level}</option>
+              ))}
+            </select>
+            {targetLevel > 1 ? (
+              <p className="text-sm text-muted-foreground">
+                Primero se guardará tu ficha de nivel 1. Después, en la pestaña Subir nivel,
+                podrás avanzar de uno en uno hasta el nivel {targetLevel}, revisando las
+                elecciones y los rasgos de cada nivel. No se saltará ninguna decisión.
+              </p>
+            ) : null}
+          </div>
         </section>
       )}
 
